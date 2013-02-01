@@ -32,7 +32,7 @@ if args.reload:
 
 
 
-# @unittest.skipIf(args.skip1 == True, "Skipping suite 1")
+
 class Test_ObjectArray(unittest.TestCase):
     """
     Suite with test cases that don't need a pickle.
@@ -212,14 +212,14 @@ if __name__ == '__main__':
 
     if args.skip1 == False:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
-        unittest.TextTestRunner(verbosity=2).run(suite)    
+        unittest.TextTestRunner(verbosity=1).run(suite)    
     else:
         DEBUG.verbose("Skipping suite 1", True)
     
     
     if args.skip2 == False:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
-        unittest.TextTestRunner(verbosity=2).run(suite)    
+        unittest.TextTestRunner(verbosity=1).run(suite)    
     else:
         DEBUG.verbose("Skipping suite 2", True)    
     
