@@ -32,15 +32,27 @@ if args.reload:
 
 
 
-@unittest.skipIf(args.skip1 == True, "Skipping suite 1")
+# @unittest.skipIf(args.skip1 == True, "Skipping suite 1")
 class Test_ObjectArray(unittest.TestCase):
 
-    ################
-    ### NO SETUP ###
-    ################
+    #############
+    ### SETUP ###
+    #############
     def setUp(self):
+        
         self.flag_verbose = args.verbose
         
+        self.oa = OA.objectarray("test")
+        
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
+        c = OA.testobject("Fiets", "c", "human", flag_verbose = self.flag_verbose)
+        
+        self.oa.add_object(a, flag_verbose = self.flag_verbose)
+        self.oa.add_object(b, flag_verbose = self.flag_verbose)
+        self.oa.add_object(c, flag_verbose = self.flag_verbose)
+        
+
     ###########################
     ### TEST ADDING OBJECTS ###
     ###########################
@@ -48,31 +60,19 @@ class Test_ObjectArray(unittest.TestCase):
         """
         Add object with new obj_id
         """
-        oa = OA.objectarray("test")
-        
-        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
-        b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
-        
-        resulta = oa.add_object(a, flag_verbose = self.flag_verbose)
-        resultb = oa.add_object(b, flag_verbose = self.flag_verbose)
-        
-        self.assertTrue(["a", "b"] ==  oa.obj_id_array and resulta == True and resultb == True) 
+        a = OA.testobject("Brommer", "d", "power", flag_verbose = self.flag_verbose)
+        result = self.oa.add_object(a, flag_verbose = self.flag_verbose)
+        self.assertTrue(["a", "b", "c", "d"] ==  self.oa.obj_id_array and result == True) 
          
     
     def test_add_object_2(self):
         """
         Add object with same obj_id
         """
-        oa = OA.objectarray("test")
-        
-        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        a = OA.testobject("Boot", "a", "power", flag_verbose = self.flag_verbose)
         DEBUG.verbose("\nError is intentional", True)
-        b = OA.testobject("Boot", "a", "power", flag_verbose = self.flag_verbose)
-        
-        resulta = oa.add_object(a, flag_verbose = self.flag_verbose)
-        resultb = oa.add_object(b, flag_verbose = self.flag_verbose)
-        
-        self.assertTrue(["a"] ==  oa.obj_id_array and resulta == True and resultb == False) 
+        result = self.oa.add_object(a, flag_verbose = self.flag_verbose)
+        self.assertTrue(["a", "b", "c"] ==  self.oa.obj_id_array and result == False) 
         
     
     def test_add_object_3(self):
@@ -85,8 +85,31 @@ class Test_ObjectArray(unittest.TestCase):
         self.assertFalse(result) 
 
 
+    #############################
+    # TEST SORTING BY SUBTYPE ###
+    #############################
+    def test_object_with_sub_type_1(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = "power"
+        array = self.oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type == sub_type and self.oa.obj_array[array[1]].sub_type == sub_type)
+        
+        
+    def test_object_with_sub_type_2(self):
+        """
+        Test if objects with sub_type 'x' are found - there should be none. This raises a warning. The resulting array has length zero.
+        """
+        sub_type = "x"
+        DEBUG.verbose("\nWarning is intentional", True) 
+        array = self.oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
+        self.assertTrue(len(array) == 0)        
 
-@unittest.skipIf(args.skip2 == True, "Skipping suite 2")
+
+
+
+# @unittest.skipIf(args.skip2 == True, "Skipping suite 2")
 class Test_ObjectArray_pickle(unittest.TestCase):
 
     #############
@@ -154,29 +177,7 @@ class Test_ObjectArray_pickle(unittest.TestCase):
         oa.load_objectarray(self.path_and_filename, obj_id_array_in = obj_id_array, flag_verbose = self.flag_verbose) 
         self.assertTrue(["a", "b"] ==  oa.obj_id_array)
 
-    #############################
-    # TEST SORTING BY SUBTYPE ###
-    #############################
-    def test_object_with_sub_type_1(self):
-        """
-        Test if objects with sub_type 'power' are found. 
-        """
-        oa = OA.objectarray("test_new")
-        oa.import_db(self.path_and_filename, flag_verbose = self.flag_verbose)
-        sub_type = "power"
-        array = oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
-        self.assertTrue(oa.obj_array[array[0]].sub_type == sub_type and oa.obj_array[array[1]].sub_type == sub_type)
-        
-    def test_object_with_sub_type_2(self):
-        """
-        Test if objects with sub_type 'x' are found - there should be none. This raises a warning
-        """
-        oa = OA.objectarray("test_new")
-        oa.import_db(self.path_and_filename, flag_verbose = self.flag_verbose)
-        sub_type = "x"
-        DEBUG.verbose("\nWarning is intentional", True) 
-        array = oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
-        self.assertTrue(len(array) == 0)        
+
         
 
     
@@ -185,14 +186,18 @@ class Test_ObjectArray_pickle(unittest.TestCase):
 
 if __name__ == '__main__':
 
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    if args.skip1 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
+        unittest.TextTestRunner(verbosity=2).run(suite)    
+    else:
+        DEBUG.verbose("Skipping suite 1", True)
     
-    suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
-    unittest.TextTestRunner(verbosity=2).run(suite)    
     
-    
-    
+    if args.skip2 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
+        unittest.TextTestRunner(verbosity=2).run(suite)    
+    else:
+        DEBUG.verbose("Skipping suite 2", True)    
     
     
     

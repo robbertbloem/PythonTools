@@ -26,7 +26,6 @@ class objectarray(CT.ClassTools):
         20130201/RB: moved class to PythonTools
         
         """
-        
         self.verbose("Created object array", flag_verbose)
         
         self.obj_id = obj_id    # identifier
