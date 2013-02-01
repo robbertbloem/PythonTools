@@ -34,11 +34,23 @@ if args.reload:
 
 # @unittest.skipIf(args.skip1 == True, "Skipping suite 1")
 class Test_ObjectArray(unittest.TestCase):
+    """
+    Suite with test cases that don't need a pickle.
+    
+    CHANGELOG:
+    20130201/RB: started the suite
+    
+    """
+
 
     #############
     ### SETUP ###
     #############
     def setUp(self):
+        """
+        Set up an objectarray object for reuse in the tests.
+        Toggle verbose using the command line. 
+        """
         
         self.flag_verbose = args.verbose
         
@@ -111,11 +123,23 @@ class Test_ObjectArray(unittest.TestCase):
 
 # @unittest.skipIf(args.skip2 == True, "Skipping suite 2")
 class Test_ObjectArray_pickle(unittest.TestCase):
+    """
+    Test case suite for functions that need a pickle.
+    The setup is done for every test case. This takes some time. For tests that don't need the pickle, use Test_ObjectArray instead.
+    
+    CHANGELOG:
+    20130201/RB: started the class
+    
+    """
+    
 
     #############
     ### SETUP ###
     #############
     def setUp(self):
+        """
+        Set up a pickle for use in this function.
+        """
         
         self.path_and_filename = "/Users/robbert/Developer/PythonTools/temp/test.pickle"
         self.flag_verbose = args.verbose
