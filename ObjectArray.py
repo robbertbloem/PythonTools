@@ -11,6 +11,21 @@ import PythonTools.ClassTools as CT
 class objectarray(CT.ClassTools):
     
     def __init__(self, name = "name", obj_id = "objectarray", flag_verbose = False):
+        """
+        Initialize an object array.
+        
+        INPUT:
+        - name (string, 'name'): a name
+        - obj_id (string, 'objectarray'): the object id
+        
+        OUTPUT:
+        None
+        
+        CHANGELOG:
+        20130131/RB: started class in Crocodile
+        20130201/RB: moved class to PythonTools
+        
+        """
         
         self.verbose("Created object array", flag_verbose)
         
@@ -27,15 +42,28 @@ class objectarray(CT.ClassTools):
         """
         Add an object to the array
         
+        INPUT:
+        - obj: an object, containting at least an obj_id
+        
+        OUTPUT:
+        - BOOL, True when okay, False for failure
+        
+        CHANGELOG:
+        20130131/RB: started function
+        
         """
-    
         self.verbose("Add object", flag_verbose)
         
-        # test if object-id is unique
-        if obj.obj_id in self.obj_id_array:
-            self.printError("obj_id already exists, will not add new object.", inspect.stack())
-            return False
         
+        try:
+            # test if object-id is unique
+            if obj.obj_id in self.obj_id_array:
+                self.printError("obj_id already exists, will not add new object.", inspect.stack())
+                return False
+        except AttributeError:
+            self.printError("Object should have an obj_id", inspect.stack())
+            return False            
+            
         self.verbose("  new object is appended.", flag_verbose)
         self.obj_array.append(obj)
         self.obj_id_array.append(obj.obj_id)
@@ -45,7 +73,16 @@ class objectarray(CT.ClassTools):
 
     def save_objectarray(self, path_and_filename, flag_overwrite = False, flag_verbose = False):
         """
-        Save the array
+        Save the array as a pickle
+        
+        INPUT:
+        - path_and_filename (string): path and filename of pickle
+        - flag_overwrite (BOOL, False): if True, then the file is overwritten
+        
+        OUTPUT:
+        - True
+        
+        CHANGELOG:
         """
 
         self.verbose("Save object array", flag_verbose)
@@ -76,6 +113,17 @@ class objectarray(CT.ClassTools):
         """
         Imports a database. The function checks for the existence of the database. It returns "False" if the file doesn't exist. Otherwise, it will return an array with class instances.
         The order of the objects is random. Use 'load_objectarray' to import with an order (requires an obj_id_array).
+        
+        INPUT:
+        - path_and_filename (string): path and filename of pickle
+        
+        OUTPUT:
+        - True for succes, False for failure
+        - obj_array and obj_id_array are filled
+        
+        CHANGELOG:
+        20130131/RB: copied function from croc
+        
         """
         
         if path_and_filename[-7:] != ".pickle":
@@ -106,6 +154,10 @@ class objectarray(CT.ClassTools):
         - path_and_filename (string): path and filename of the pickle
         - obj_id_array_in (list): object ids to be loaded (see behavior for details)
         
+        OUTPUT:
+        - True for success, False for Failure
+        - obj_array and obj_id_array are filled
+        
         CHANGELOG
         20130201/RB: started function. Origin is in import_db and croc.Pe
               
@@ -116,9 +168,6 @@ class objectarray(CT.ClassTools):
         a b             = a b
         a b c d         = a b c
         a b d           = a b
-        
-        NOTE:
-        Test case is available
         
         """
         
@@ -156,6 +205,16 @@ class objectarray(CT.ClassTools):
     def print_objects(self, flag_verbose = False):
         """
         Print the objects of the array. This will print all the details of the objects.
+        
+        INPUT:
+        None
+        
+        OUTPUT:
+        Function prints the objects - usually as memory addresses
+        
+        CHANGELOG:
+        20130131/RB: started function
+        
         """
         self.verbose("Print objects", flag_verbose)
         for i in self.obj_array:
@@ -164,6 +223,16 @@ class objectarray(CT.ClassTools):
     def print_object_ids(self, flag_verbose = False):
         """
         Print the objects of the array. This will only print the object ids.
+        
+        INPUT:
+        None
+        
+        OUTPUT:
+        Function prints the object ids as strings.
+        
+        CHANGELOG:
+        20130131/RB: started the function
+        
         """
         self.verbose("Print object ids", flag_verbose)
         for i in self.obj_id_array:
@@ -173,10 +242,18 @@ class objectarray(CT.ClassTools):
     def object_with_sub_type(self, sub_type, flag_verbose = False):
         """
         Return an array with the indices of objects that have a certain sub_type. 
+        
+        INPUT:
+        - sub_type (string): string of sub_type
+        
+        OUTPUT:
+        - a list with indices of obj_array with the given sub_type
+        
+        CHANGELOG:
+        20130201/RB: started the function
+        
         """
         sub_type_array = []
-        
-        
         
         for i in range(len(self.obj_array)):
             if self.obj_array[i].sub_type == sub_type:
