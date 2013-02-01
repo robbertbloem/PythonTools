@@ -12,20 +12,19 @@ import PythonTools.Debug as DEBUG
 
 class ClassTools(object):
     """
-    A way to print the whole class in one go.
-    It prints the key and the value.
+    A way to print the whole class in one go. It prints the key and the value. Adapted from 'Learning Python', 4th edition, by Mark Lutz.
+    
+    The printError, printWarning and verbose are my own idea, no need to blame the book there.
     """
+
     def gatherAttrs(self):
         attrs=[]
         for key in sorted(self.__dict__):
             attrs.append("\t%20s  =  %s\n" % (format_key(key), format_print(getattr(self, key))))
         return " ".join(attrs)
 
-
-
     def __str__(self):
         return "[%s:\n %s]" % (self.__class__.__name__, self.gatherAttrs())
-
 
     def printError(self, string, location = []):
         DEBUG.printError(string, location)
@@ -55,9 +54,6 @@ def format_print(var):
         ndarray     => shape
         [1,ndarray] => [1, shape]
     """
-    if var == "obj_id":
-        return "obj_id"
-    
     # list
     if type(var) == list:
         typ = range(len(var))       
@@ -80,8 +76,6 @@ def format_print(var):
     elif type(var) == time.struct_time: 
         var = time.strftime("%a, %d %b %Y %H:%M:%S", var)
         return var
-    # elif type(var) == int:
-        # return var
     elif type(var) == float:
         return round(var, 2)
     elif type(var) == numpy.float64:
@@ -98,7 +92,14 @@ def format_key(key):
     """
     if key[0] == "_":
         key = key[1:]
-    else:
-        pass
 
     return key
+
+
+
+
+
+
+
+
+
