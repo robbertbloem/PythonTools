@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from __future__ import print_function
 from __future__ import division
 
@@ -20,6 +18,8 @@ parser = argparse.ArgumentParser(description='Command line arguments')
 # add arguments
 parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
 parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
+parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1")
+parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2")
 
 # process
 args = parser.parse_args()
@@ -32,8 +32,66 @@ if args.reload:
 
 
 
+@unittest.skipIf(args.skip1 == True, "Skipping suite 1")
 class Test_ObjectArray(unittest.TestCase):
+
+    ################
+    ### NO SETUP ###
+    ################
+    def setUp(self):
+        self.flag_verbose = args.verbose
+        
+    ###########################
+    ### TEST ADDING OBJECTS ###
+    ###########################
+    def test_add_object_1(self):
+        """
+        Add object with new obj_id
+        """
+        oa = OA.objectarray("test")
+        
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
+        
+        resulta = oa.add_object(a, flag_verbose = self.flag_verbose)
+        resultb = oa.add_object(b, flag_verbose = self.flag_verbose)
+        
+        self.assertTrue(["a", "b"] ==  oa.obj_id_array and resulta == True and resultb == True) 
+         
     
+    def test_add_object_2(self):
+        """
+        Add object with same obj_id
+        """
+        oa = OA.objectarray("test")
+        
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        DEBUG.verbose("\nError is intentional", True)
+        b = OA.testobject("Boot", "a", "power", flag_verbose = self.flag_verbose)
+        
+        resulta = oa.add_object(a, flag_verbose = self.flag_verbose)
+        resultb = oa.add_object(b, flag_verbose = self.flag_verbose)
+        
+        self.assertTrue(["a"] ==  oa.obj_id_array and resulta == True and resultb == False) 
+        
+    
+    def test_add_object_3(self):
+        """
+        Add object without obj_id
+        """
+        oa = OA.objectarray("test_new")
+        DEBUG.verbose("\nError is intentional", True)
+        result = oa.add_object(1, flag_verbose = self.flag_verbose)
+        self.assertFalse(result) 
+
+
+
+@unittest.skipIf(args.skip2 == True, "Skipping suite 2")
+class Test_ObjectArray_pickle(unittest.TestCase):
+
+    #############
+    ### SETUP ###
+    #############
     def setUp(self):
         
         self.path_and_filename = "/Users/robbert/Developer/PythonTools/temp/test.pickle"
@@ -53,6 +111,10 @@ class Test_ObjectArray(unittest.TestCase):
         
         self.obj_id_array = oa.obj_id_array
 
+
+    #################################
+    ### TEST LOADING OBJECT ARRAY ###
+    #################################
     def test_load_objectarray_1(self):
         """
         Test if object are correctly ordered.
@@ -92,6 +154,9 @@ class Test_ObjectArray(unittest.TestCase):
         oa.load_objectarray(self.path_and_filename, obj_id_array_in = obj_id_array, flag_verbose = self.flag_verbose) 
         self.assertTrue(["a", "b"] ==  oa.obj_id_array)
 
+    #############################
+    # TEST SORTING BY SUBTYPE ###
+    #############################
     def test_object_with_sub_type_1(self):
         """
         Test if objects with sub_type 'power' are found. 
@@ -123,7 +188,8 @@ if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
     unittest.TextTestRunner(verbosity=2).run(suite)
     
-    
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
+    unittest.TextTestRunner(verbosity=2).run(suite)    
     
     
     
