@@ -9,6 +9,16 @@ import PythonTools.ClassTools as CT
 
 
 class objectarray(CT.ClassTools):
+    """
+    object array class - functions for arrays of objects
+    
+    
+    
+    
+    """
+    
+    
+    
     
     def __init__(self, name = "name", obj_id = "objectarray", flag_verbose = False):
         """
@@ -19,21 +29,33 @@ class objectarray(CT.ClassTools):
         - obj_id (string, 'objectarray'): the object id
         
         OUTPUT:
-        None
+        obj_array is initialized. The object array contains the objects
         
         CHANGELOG:
         20130131/RB: started class in Crocodile
         20130201/RB: moved class to PythonTools
+        20130201/RB: replaced self.obj_id_array by a property with the same name. One less thing to keep track of, same results.
         
         """
         self.verbose("Created object array", flag_verbose)
         
         self.obj_id = obj_id    # identifier
-        
-        self.name = name        # name - optional
-        
+        self.name = name        # name - optional       
         self.obj_array = []     # array with objects
-        self.obj_id_array = []  # array with object-identifiers, to prevent duplicates. The array is not necesarily in the correct order.
+
+
+    @property
+    def obj_id_array(self):
+        """
+        returns an array with only object id's
+        
+        CHANGELOG:
+        20130201/RB: started function. No need to keep track of an extra variable.        
+        """ 
+        obj_id_array = []
+        for obj in self.obj_array:
+            obj_id_array.append(obj.obj_id) 
+        return obj_id_array
 
 
 
@@ -42,7 +64,7 @@ class objectarray(CT.ClassTools):
         Add an object to the array
         
         INPUT:
-        - obj: an object, containting at least an obj_id
+        - obj: an object, containting at least an obj_id. It is useful to have a sub_type, but not required.
         
         OUTPUT:
         - BOOL, True when okay, False for failure
@@ -52,7 +74,6 @@ class objectarray(CT.ClassTools):
         
         """
         self.verbose("Add object", flag_verbose)
-        
         
         try:
             # test if object-id is unique
@@ -65,7 +86,6 @@ class objectarray(CT.ClassTools):
             
         self.verbose("  new object is appended.", flag_verbose)
         self.obj_array.append(obj)
-        self.obj_id_array.append(obj.obj_id)
         return True
          
         
@@ -118,7 +138,7 @@ class objectarray(CT.ClassTools):
         
         OUTPUT:
         - True for succes, False for failure
-        - obj_array and obj_id_array are filled
+        - obj_array is populated
         
         CHANGELOG:
         20130131/RB: copied function from croc
@@ -136,7 +156,6 @@ class objectarray(CT.ClassTools):
                 if flag_verbose:
                     self.verbose(key, flag_verbose)
                 self.obj_array.append(db[key])
-                self.obj_id_array.append(db[key].obj_id)
             db.close() 
             return True
         else:     
@@ -155,8 +174,8 @@ class objectarray(CT.ClassTools):
         
         OUTPUT:
         - True for success, False for Failure
-        - obj_array and obj_id_array are filled
-        
+        - obj_array is populated
+                
         CHANGELOG
         20130201/RB: started function. Origin is in import_db and croc.Pe
               
@@ -180,23 +199,19 @@ class objectarray(CT.ClassTools):
             
         db=shelve.open(path_and_filename)
         temp_array = []
-        temp_id_array = []
         for key in db:
             if flag_verbose:
                 self.verbose(key, flag_verbose)
             temp_array.append(db[key])
-            temp_id_array.append(db[key].obj_id) 
         db.close() 
         
         # make the new arrays
-        self.obj_array = [] #* len(obj_id_array_in)
-        self.obj_id_array = [] #* len(obj_id_array_in)
+        self.obj_array = [] 
         
         for i in range(len(obj_id_array_in)):
             for j in range(len(temp_array)):              
                 if obj_id_array_in[i] == temp_array[j].obj_id:
                     self.obj_array.append(temp_array[j])
-                    self.obj_id_array.append(self.obj_array[i].obj_id)
 
         return True
 
@@ -209,7 +224,7 @@ class objectarray(CT.ClassTools):
         None
         
         OUTPUT:
-        Function prints the objects - usually as memory addresses
+        Function prints the details of all objects
         
         CHANGELOG:
         20130131/RB: started function
@@ -218,6 +233,7 @@ class objectarray(CT.ClassTools):
         self.verbose("Print objects", flag_verbose)
         for i in self.obj_array:
             print(i)
+
 
     def print_object_ids(self, flag_verbose = False):
         """
@@ -234,8 +250,7 @@ class objectarray(CT.ClassTools):
         
         """
         self.verbose("Print object ids", flag_verbose)
-        for i in self.obj_id_array:
-            print(i)
+        print(self.obj_id_array)
 
 
     def object_with_sub_type(self, sub_type, flag_verbose = False):
