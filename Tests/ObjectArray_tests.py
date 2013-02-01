@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
 from __future__ import division
 
+import argparse
 import unittest
 
 import numpy
@@ -9,9 +12,23 @@ import matplotlib.pyplot as plt
 
 import PythonTools.ObjectArray as OA
 import PythonTools.Debug as DEBUG
+import PythonTools.ClassTools as CT # only imported to allow for reload
 
-reload(OA)
-reload(DEBUG)
+# init argument parser
+parser = argparse.ArgumentParser(description='Command line arguments')
+
+# add arguments
+parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
+parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
+
+# process
+args = parser.parse_args()
+
+# reload
+if args.reload:
+    reload(OA)
+    reload(DEBUG)
+    reload(CT)
 
 
 
@@ -20,7 +37,7 @@ class Test_ObjectArray(unittest.TestCase):
     def setUp(self):
         
         self.path_and_filename = "/Users/robbert/Developer/PythonTools/temp/test.pickle"
-        self.flag_verbose = False
+        self.flag_verbose = args.verbose
 
         oa = OA.objectarray("test")
         

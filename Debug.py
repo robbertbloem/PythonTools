@@ -1,11 +1,6 @@
 from __future__ import print_function
 from __future__ import division
 
-# import numpy
-# import matplotlib 
-# import matplotlib.pyplot as plt
-
-
 def printError(string, location = []):
     """
     printError: print an error in red.

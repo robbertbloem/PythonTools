@@ -7,8 +7,6 @@ import os
 
 import PythonTools.ClassTools as CT
 
-reload(CT)
-
 
 class objectarray(CT.ClassTools):
     
