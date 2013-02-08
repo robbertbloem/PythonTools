@@ -20,6 +20,7 @@ parser.add_argument("-v", "--verbose", action="store_true", help="Increase outpu
 parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
 parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1")
 parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2")
+parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3")
 
 # process
 args = parser.parse_args()
@@ -203,8 +204,53 @@ class Test_ObjectArray_pickle(unittest.TestCase):
 
 
         
+class Test_ObjectArray_print_objects(unittest.TestCase):
+    """
+    Suite with test cases that don't need a pickle.
 
-    
+    CHANGELOG:
+    20130208/RB: started the suite
+
+    """
+
+
+    #############
+    ### SETUP ###
+    #############
+    def setUp(self):
+        """
+        Set up an objectarray object for reuse in the tests.
+        Toggle verbose using the command line. 
+        """
+
+        self.flag_verbose = args.verbose
+
+        self.oa = OA.objectarray("test")
+
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
+        c = OA.testobject("Fiets", "c", "human", flag_verbose = self.flag_verbose)
+
+        self.oa.add_object(a, flag_verbose = self.flag_verbose)
+        self.oa.add_object(b, flag_verbose = self.flag_verbose)
+        self.oa.add_object(c, flag_verbose = self.flag_verbose)
+
+    def test_print_objects_1(self):
+        self.oa.print_objects(flag_verbose = self.flag_verbose)
+
+    def test_print_objects_2(self):
+        self.oa.print_objects(index = -1, flag_verbose = self.flag_verbose)
+        
+    def test_print_objects_3(self):
+        DEBUG.verbose("\nWarning is intentional", True) 
+        self.oa.print_objects(index = 4, flag_verbose = self.flag_verbose)
+
+    def test_print_objects_4(self):
+        self.oa.print_objects(index = 1, flag_verbose = self.flag_verbose)
+        
+
+
+
 
 
 
@@ -223,7 +269,11 @@ if __name__ == '__main__':
     else:
         DEBUG.verbose("Skipping suite 2", True)    
     
-    
+    if args.skip3 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_print_objects)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping suite 2", True)        
     
     
     

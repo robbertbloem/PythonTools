@@ -57,6 +57,12 @@ class objectarray(CT.ClassTools):
             obj_id_array.append(obj.obj_id) 
         return obj_id_array
 
+    # phase   
+    @property
+    def obj(self):
+        return self.obj_array
+
+
 
 
     def add_object(self, obj, flag_verbose = False):
@@ -216,7 +222,7 @@ class objectarray(CT.ClassTools):
         return True
 
 
-    def print_objects(self, flag_verbose = False):
+    def print_objects(self, index = -1, flag_verbose = False):
         """
         Print the objects of the array. This will print all the details of the objects.
         
@@ -228,11 +234,17 @@ class objectarray(CT.ClassTools):
         
         CHANGELOG:
         20130131/RB: started function
+        20130208/RB: introduced index to print only one element
         
         """
         self.verbose("Print objects", flag_verbose)
-        for i in self.obj_array:
-            print(i)
+        if index > len(self.obj_array) - 1:
+            self.printError("Index is out of bounds.", inspect.stack())
+        elif index > -1:
+            print(self.obj_array[index])
+        else:
+            for i in self.obj_array:
+                print(i)
 
 
     def print_object_ids(self, flag_verbose = False):
@@ -250,7 +262,10 @@ class objectarray(CT.ClassTools):
         
         """
         self.verbose("Print object ids", flag_verbose)
-        print(self.obj_id_array)
+        print("id's for objects in object array " + self.name)
+        for i in range(len(self.obj_array)):
+            print(i, self.obj_array[i].obj_id)
+        # print(self.obj_id_array)
 
 
     def object_with_sub_type(self, sub_type, flag_verbose = False):
