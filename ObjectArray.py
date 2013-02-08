@@ -93,8 +93,31 @@ class objectarray(CT.ClassTools):
         self.verbose("  new object is appended.", flag_verbose)
         self.obj_array.append(obj)
         return True
-         
+
+
+    def add_array_with_objects(self, obj_array, flag_verbose = False):
+        """
+        Add an array of objects to the array
         
+        INPUT:
+        - obj_array: an array with objects, each containting at least an obj_id. It is useful to have a sub_type, but not required.
+        
+        OUTPUT:
+        - BOOL, True when okay, False for failure
+        
+        CHANGELOG:
+        20130208/RB: started function
+        
+        """       
+        
+        self.verbose("Add object array", flag_verbose)
+        
+        for obj in obj_array:
+            self.add_object(obj, flag_verbose = flag_verbose)
+
+
+
+
 
     def save_objectarray(self, path_and_filename, flag_overwrite = False, flag_verbose = False):
         """

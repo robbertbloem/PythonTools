@@ -18,9 +18,10 @@ parser = argparse.ArgumentParser(description='Command line arguments')
 # add arguments
 parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
 parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
-parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1")
-parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2")
-parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3")
+parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1: object array, no pickle")
+parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2: object array, with pickle")
+parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3: print objects")
+parser.add_argument("-s4", "--skip4", action="store_true", help="Skip testing suite 4: add array with objects")
 
 # process
 args = parser.parse_args()
@@ -249,8 +250,55 @@ class Test_ObjectArray_print_objects(unittest.TestCase):
         self.oa.print_objects(index = 1, flag_verbose = self.flag_verbose)
         
 
+class Test_ObjectArray_add_array_with_objects(unittest.TestCase):
+    """
+    Suite with test cases that don't need a pickle.
+
+    CHANGELOG:
+    20130208/RB: started the suite
+
+    """
 
 
+    #############
+    ### SETUP ###
+    #############
+    def setUp(self):
+        """
+        Set up an objectarray object for reuse in the tests.
+        Toggle verbose using the command line. 
+        """
+
+        self.flag_verbose = args.verbose
+
+        self.oa = OA.objectarray("test")
+
+        self.a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        self.b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
+        self.c = OA.testobject("Fiets", "c", "human", flag_verbose = self.flag_verbose)
+        self.d = OA.testobject("Vliegtuig", "d", "power", flag_verbose = self.flag_verbose)
+
+        self.oa.add_object(self.a, flag_verbose = self.flag_verbose)
+        self.oa.add_object(self.b, flag_verbose = self.flag_verbose)
+        
+
+    def test_add_array_with_objects_1(self):
+        """
+        Add unique objects to the object array
+        """
+        temp = [self.c, self.d]
+        self.oa.add_array_with_objects(temp, flag_verbose = self.flag_verbose) 
+        self.assertTrue(["a", "b", "c", "d"] ==  self.oa.obj_id_array)        
+
+
+    def test_add_array_with_objects_2(self):
+        """
+        Add unique and a non-unique object to the array
+        """
+        temp = [self.a, self.c]
+        DEBUG.verbose("\nWarning is intentional", True) 
+        self.oa.add_array_with_objects(temp, flag_verbose = self.flag_verbose) 
+        self.assertTrue(["a", "b", "c"] ==  self.oa.obj_id_array)        
 
 
 
@@ -260,26 +308,30 @@ if __name__ == '__main__':
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
         unittest.TextTestRunner(verbosity=1).run(suite)    
     else:
-        DEBUG.verbose("Skipping suite 1", True)
+        DEBUG.verbose("Skipping suite 1: object array, no pickle", True)
     
     
     if args.skip2 == False:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
         unittest.TextTestRunner(verbosity=1).run(suite)    
     else:
-        DEBUG.verbose("Skipping suite 2", True)    
+        DEBUG.verbose("Skipping suite 2: object array, with pickle", True)    
     
     if args.skip3 == False:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_print_objects)
         unittest.TextTestRunner(verbosity=1).run(suite)    
     else:
-        DEBUG.verbose("Skipping suite 2", True)        
+        DEBUG.verbose("Skipping suite 3: print objects", True)        
+    
+    if args.skip4 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_add_array_with_objects)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping suite 4: add array with objects", True)         
     
     
     
-    
-    
-    
+  
     
     
     
