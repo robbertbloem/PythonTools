@@ -259,13 +259,16 @@ class objectarray(CT.ClassTools):
         
         CHANGELOG:
         20130131/RB: started the function
+        20130208/RB: if object has variable 'sub_type' it will print that as well. Made the printing look nicer. 
         
         """
         self.verbose("Print object ids", flag_verbose)
         print("id's for objects in object array " + self.name)
         for i in range(len(self.obj_array)):
-            print(i, self.obj_array[i].obj_id)
-        # print(self.obj_id_array)
+            if hasattr(self.obj_array[i], "sub_type"):
+                print("{0:3d} {1:10s} {2:10s}".format(i, self.obj_array[i].obj_id, self.obj_array[i].sub_type))
+            else:
+                print("{0:3d} {1:10s}".format(i, self.obj_array[i].obj_id))
 
 
     def object_with_sub_type(self, sub_type, flag_verbose = False):
