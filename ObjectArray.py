@@ -306,12 +306,16 @@ class objectarray(CT.ClassTools):
         
         CHANGELOG:
         20130201/RB: started the function
+        20130211/RB: instead of string, you can now also give an array with string
         
         """
+        if type(sub_type) != list:
+            sub_type = [sub_type]
+            
         sub_type_array = []
         
         for i in range(len(self.obj_array)):
-            if self.obj_array[i].sub_type == sub_type:
+            if self.obj_array[i].sub_type in sub_type:
                 sub_type_array.append(i) 
         
         if len(sub_type_array) == 0:
@@ -319,12 +323,16 @@ class objectarray(CT.ClassTools):
             
         return sub_type_array
 
+
     def objects_with_sub_type(self, sub_type, flag_verbose = False):
-        
+
+        if type(sub_type) != list:
+            sub_type = [sub_type]
+                
         sub_type_array = []
         
         for idx in self.obj_array:
-            if idx.sub_type == sub_type:
+            if idx.sub_type in sub_type:
                 sub_type_array.append(idx) 
         
         if len(sub_type_array) == 0:

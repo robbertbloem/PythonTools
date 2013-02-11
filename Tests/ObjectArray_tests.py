@@ -102,16 +102,32 @@ class Test_ObjectArray(unittest.TestCase):
     #############################
     # TEST SORTING BY SUBTYPE ###
     #############################
-    def test_object_with_sub_type_1(self):
+    def test_object_with_sub_type_correct(self):
         """
         Test if objects with sub_type 'power' are found. 
         """
         sub_type = "power"
         array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
         self.assertTrue(self.oa.obj_array[array[0]].sub_type == sub_type and self.oa.obj_array[array[1]].sub_type == sub_type)
+
+    def test_object_with_sub_type_list_1(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = ["power", "x"]
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type)
+
+    def test_object_with_sub_type_list_2(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = ["power", "human"]
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type and self.oa.obj_array[array[2]].sub_type in sub_type)
         
         
-    def test_object_with_sub_type_2(self):
+    def test_object_with_sub_type_unknown_sub_type(self):
         """
         Test if objects with sub_type 'x' are found - there should be none. This raises a warning. The resulting array has length zero.
         """
