@@ -107,7 +107,7 @@ class Test_ObjectArray(unittest.TestCase):
         Test if objects with sub_type 'power' are found. 
         """
         sub_type = "power"
-        array = self.oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
         self.assertTrue(self.oa.obj_array[array[0]].sub_type == sub_type and self.oa.obj_array[array[1]].sub_type == sub_type)
         
         
@@ -117,7 +117,7 @@ class Test_ObjectArray(unittest.TestCase):
         """
         sub_type = "x"
         DEBUG.verbose("\nWarning is intentional", True) 
-        array = self.oa.object_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
         self.assertTrue(len(array) == 0)        
 
 

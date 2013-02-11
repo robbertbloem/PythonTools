@@ -294,7 +294,7 @@ class objectarray(CT.ClassTools):
                 print("{0:3d} {1:10s}".format(i, self.obj_array[i].obj_id))
 
 
-    def object_with_sub_type(self, sub_type, flag_verbose = False):
+    def list_objects_with_sub_type(self, sub_type, flag_verbose = False):
         """
         Return an array with the indices of objects that have a certain sub_type. 
         
@@ -319,6 +319,32 @@ class objectarray(CT.ClassTools):
             
         return sub_type_array
 
+    def objects_with_sub_type(self, sub_type, flag_verbose = False):
+        
+        sub_type_array = []
+        
+        for idx in self.obj_array:
+            if idx.sub_type == sub_type:
+                sub_type_array.append(idx) 
+        
+        if len(sub_type_array) == 0:
+            self.printWarning("sub_type_array is empty", inspect.stack())
+            
+        return sub_type_array        
+
+
+
+    def objects_from_list(self, list_with_indices, flag_verbose = False):
+        
+        new_list = []
+        
+        for idx in list_with_indices:
+            new_list.append(self.obj_array[idx])
+            
+        return new_list
+        
+        
+        
 
 
 class testobject(CT.ClassTools):
