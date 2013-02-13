@@ -18,12 +18,20 @@ import PythonTools.Debug as DEBUG
 # init argument parser
 parser = argparse.ArgumentParser(description='Command line arguments')
 
+global suite_list
+suite_list = [
+    "Suite 1: Debugging printing",
+    "Suite 2: Format print",
+    "Suite 3: Format key",
+]
+
 # add arguments
-parser.add_argument("-v", "--verbose", action="store_true", help="Make PythonTools functions verbose")
-parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
-parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1")
-parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2")
-parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3")
+parser.add_argument("-v", "--verbose", action = "store_true", help = "Increase output verbosity")
+parser.add_argument("-r", "--reload", action = "store_true", help = "Reload modules")
+parser.add_argument("-s1", "--skip1", action = "store_true", help = suite_list[0])
+parser.add_argument("-s2", "--skip2", action = "store_true", help = suite_list[1])
+parser.add_argument("-s3", "--skip3", action = "store_true", help = suite_list[2])
+
 
 # process
 args = parser.parse_args()
@@ -33,8 +41,31 @@ if args.reload:
     reload(CT)
     reload(DEBUG)
 
+def execute(args):
+    
+    if args.skip1 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_debug)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping :" + suite_list[0], True)
+        
+    if args.skip2 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_format_print)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[1], True)
+        
+    if args.skip3 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_format_key)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[2], True)  
 
-class Test_ClassTools_debug(unittest.TestCase):
+
+
+
+
+class Test_debug(unittest.TestCase):
     """
     Test suite for stuff that prints error messages.
     """
@@ -74,7 +105,7 @@ class Test_ClassTools_debug(unittest.TestCase):
         self.obj.printWarning("Warning test - no location")  
 
 
-class Test_ClassTools_format_print(unittest.TestCase):
+class Test_format_print(unittest.TestCase):
     """
     Test suite for stuff that prints things.
     time stuff is not checked yet
@@ -152,7 +183,7 @@ class Test_ClassTools_format_print(unittest.TestCase):
 
 
 
-class Test_ClassTools_format_key(unittest.TestCase):
+class Test_format_key(unittest.TestCase):
     """
     Test suite for stuff that prints things.
     """
@@ -177,23 +208,7 @@ class Test_ClassTools_format_key(unittest.TestCase):
 
 if __name__ == '__main__': 
     
-    if args.skip1 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ClassTools_debug)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 1: debug", True)
-        
-    if args.skip2 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ClassTools_format_print)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 2: format print", True)
-        
-    if args.skip3 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ClassTools_format_key)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 3: format key", True)        
+    execute(args)      
 
 
 

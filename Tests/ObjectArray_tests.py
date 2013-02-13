@@ -18,14 +18,25 @@ import PythonTools.ClassTools as CT # only imported to allow for reload
 # init argument parser
 parser = argparse.ArgumentParser(description='Command line arguments')
 
+global suite_list
+suite_list = [
+    "Suite 1: Object array, no pickle",
+    "Suite 2: Load object array from pickle",
+    "Suite 3: Print objects",
+    "Suite 4: Add array with objects",
+    "Suite 5: Save object array",
+    "Suite 6: List objects with subtype"
+]
+
 # add arguments
-parser.add_argument("-v", "--verbose", action="store_true", help="Increase output verbosity")
-parser.add_argument("-r", "--reload", action="store_true", help="Reload modules")
-parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing suite 1: object array, no pickle")
-parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2: object array, with pickle")
-parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3: print objects")
-parser.add_argument("-s4", "--skip4", action="store_true", help="Skip testing suite 4: add array with objects")
-parser.add_argument("-s5", "--skip5", action="store_true", help="Skip testing suite 5: save object_array")
+parser.add_argument("-v", "--verbose", action = "store_true", help = "Increase output verbosity")
+parser.add_argument("-r", "--reload", action = "store_true", help = "Reload modules")
+parser.add_argument("-s1", "--skip1", action = "store_true", help = suite_list[0])
+parser.add_argument("-s2", "--skip2", action = "store_true", help = suite_list[1])
+parser.add_argument("-s3", "--skip3", action = "store_true", help = suite_list[2])
+parser.add_argument("-s4", "--skip4", action = "store_true", help = suite_list[3])
+parser.add_argument("-s5", "--skip5", action ="store_true", help = suite_list[4])
+parser.add_argument("-s6", "--skip6", action ="store_true", help = suite_list[5])
 
 # process
 args = parser.parse_args()
@@ -37,9 +48,50 @@ if args.reload:
     reload(CT)
 
 
+def execute(args):
+
+    if args.skip1 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_add_object)
+        unittest.TextTestRunner(verbosity=1).run(suite)  
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[0], True)
+    
+    
+    if args.skip2 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_load_object_array)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[1], True)   
+    
+    if args.skip3 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_print_objects)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[2], True)        
+    
+    if args.skip4 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_add_array_with_objects)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[3], True)       
+    
+    if args.skip5 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_save_objectArray)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[4], True)
+
+    if args.skip6 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_list_objects_with_sub_type)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping: " + suite_list[5], True)
+
+    
 
 
-class Test_ObjectArray(unittest.TestCase):
+
+class Test_add_object(unittest.TestCase):
     """
     Suite with test cases that don't need a pickle.
     
@@ -48,10 +100,6 @@ class Test_ObjectArray(unittest.TestCase):
     
     """
 
-
-    #############
-    ### SETUP ###
-    #############
     def setUp(self):
         """
         Set up an objectarray object for reuse in the tests.
@@ -69,12 +117,8 @@ class Test_ObjectArray(unittest.TestCase):
         self.oa.add_object(a, flag_verbose = self.flag_verbose)
         self.oa.add_object(b, flag_verbose = self.flag_verbose)
         self.oa.add_object(c, flag_verbose = self.flag_verbose)
-        
 
-    ###########################
-    ### TEST ADDING OBJECTS ###
-    ###########################
-    def test_add_object_1(self):
+    def test_add_object_correct(self):
         """
         Add object with new obj_id
         """
@@ -83,7 +127,7 @@ class Test_ObjectArray(unittest.TestCase):
         self.assertTrue(["a", "b", "c", "d"] ==  self.oa.obj_id_array and result == True) 
          
     
-    def test_add_object_2(self):
+    def test_add_object_with_same_obj_id(self):
         """
         Add object with same obj_id
         """
@@ -93,7 +137,7 @@ class Test_ObjectArray(unittest.TestCase):
         self.assertTrue(["a", "b", "c"] ==  self.oa.obj_id_array and result == False) 
         
     
-    def test_add_object_3(self):
+    def test_add_object_without_obj_id(self):
         """
         Add object without obj_id
         """
@@ -103,48 +147,9 @@ class Test_ObjectArray(unittest.TestCase):
         self.assertFalse(result) 
 
 
-    #############################
-    # TEST SORTING BY SUBTYPE ###
-    #############################
-    def test_object_with_sub_type_correct(self):
-        """
-        Test if objects with sub_type 'power' are found. 
-        """
-        sub_type = "power"
-        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
-        self.assertTrue(self.oa.obj_array[array[0]].sub_type == sub_type and self.oa.obj_array[array[1]].sub_type == sub_type)
-
-    def test_object_with_sub_type_list_1(self):
-        """
-        Test if objects with sub_type 'power' are found. 
-        """
-        sub_type = ["power", "x"]
-        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
-        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type)
-
-    def test_object_with_sub_type_list_2(self):
-        """
-        Test if objects with sub_type 'power' are found. 
-        """
-        sub_type = ["power", "human"]
-        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
-        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type and self.oa.obj_array[array[2]].sub_type in sub_type)
-        
-        
-    def test_object_with_sub_type_unknown_sub_type(self):
-        """
-        Test if objects with sub_type 'x' are found - there should be none. This raises a warning. The resulting array has length zero.
-        """
-        sub_type = "x"
-        DEBUG.verbose("\nWarning is intentional", True) 
-        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
-        self.assertTrue(len(array) == 0)        
 
 
-
-
-
-class Test_ObjectArray_pickle(unittest.TestCase):
+class Test_load_object_array(unittest.TestCase):
     """
     Test case suite for functions that need a pickle.
     The setup is done for every test case. This takes some time. For tests that don't need the pickle, use Test_ObjectArray instead.
@@ -231,7 +236,7 @@ class Test_ObjectArray_pickle(unittest.TestCase):
 
 
         
-class Test_ObjectArray_print_objects(unittest.TestCase):
+class Test_print_objects(unittest.TestCase):
     """
     Suite with test cases that don't need a pickle.
 
@@ -240,10 +245,6 @@ class Test_ObjectArray_print_objects(unittest.TestCase):
 
     """
 
-
-    #############
-    ### SETUP ###
-    #############
     def setUp(self):
         """
         Set up an objectarray object for reuse in the tests.
@@ -262,28 +263,30 @@ class Test_ObjectArray_print_objects(unittest.TestCase):
         self.oa.add_object(b, flag_verbose = self.flag_verbose)
         self.oa.add_object(c, flag_verbose = self.flag_verbose)
 
-    def test_print_objects_1(self):
+    def test_print_objects_all(self):
         DEBUG.verbose("\n3 objects printed", True) 
         res = self.oa.print_objects(flag_verbose = self.flag_verbose)
         self.assertTrue(res)
 
-    def test_print_objects_2(self):
+    def test_print_objects_all_1(self):
         DEBUG.verbose("\n3 objects printed", True) 
         res = self.oa.print_objects(index = -1, flag_verbose = self.flag_verbose)
         self.assertTrue(res)
-        
-    def test_print_objects_3(self):
-        DEBUG.verbose("\nWarning is intentional", True) 
-        res = self.oa.print_objects(index = 4, flag_verbose = self.flag_verbose)
-        self.assertFalse(res)
 
-    def test_print_objects_4(self):
+    def test_print_objects_correct_index(self):
         DEBUG.verbose("\n1 object printed", True) 
         res = self.oa.print_objects(index = 1, flag_verbose = self.flag_verbose)
         self.assertTrue(res)
         
+    def test_print_objects_index_out_of_range(self):
+        DEBUG.verbose("\nWarning is intentional", True) 
+        res = self.oa.print_objects(index = 4, flag_verbose = self.flag_verbose)
+        self.assertFalse(res)
 
-class Test_ObjectArray_add_array_with_objects(unittest.TestCase):
+
+        
+
+class Test_add_array_with_objects(unittest.TestCase):
     """
     Suite with test cases that don't need a pickle.
 
@@ -292,10 +295,6 @@ class Test_ObjectArray_add_array_with_objects(unittest.TestCase):
 
     """
 
-
-    #############
-    ### SETUP ###
-    #############
     def setUp(self):
         """
         Set up an objectarray object for reuse in the tests.
@@ -346,10 +345,6 @@ class Test_save_objectArray(unittest.TestCase):
 
     """
 
-
-    #############
-    ### SETUP ###
-    #############
     def setUp(self):
         """
         Set up a pickle for use in this function.
@@ -385,41 +380,80 @@ class Test_save_objectArray(unittest.TestCase):
 
 
 
+class Test_list_objects_with_sub_type(unittest.TestCase):
+    """
+    List object by subtype
+
+    CHANGELOG:
+    20130201/RB: started the suite
+
+    """
+
+    def setUp(self):
+        """
+        Set up an objectarray object for reuse in the tests.
+        Toggle verbose using the command line. 
+        """
+
+        self.flag_verbose = args.verbose
+
+        self.oa = OA.objectarray("test")
+
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+        b = OA.testobject("Boot", "b", "power", flag_verbose = self.flag_verbose)
+        c = OA.testobject("Fiets", "c", "human", flag_verbose = self.flag_verbose)
+
+        self.oa.add_object(a, flag_verbose = self.flag_verbose)
+        self.oa.add_object(b, flag_verbose = self.flag_verbose)
+        self.oa.add_object(c, flag_verbose = self.flag_verbose)
+
+
+    def test_object_with_sub_type_correct(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = "power"
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type == sub_type and self.oa.obj_array[array[1]].sub_type == sub_type)
+
+    def test_object_with_sub_type_list_1(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = ["power", "x"]
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type)
+
+    def test_object_with_sub_type_list_2(self):
+        """
+        Test if objects with sub_type 'power' are found. 
+        """
+        sub_type = ["power", "human"]
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)        
+        self.assertTrue(self.oa.obj_array[array[0]].sub_type in sub_type and self.oa.obj_array[array[1]].sub_type in sub_type and self.oa.obj_array[array[2]].sub_type in sub_type)
+
+
+    def test_object_with_sub_type_unknown_sub_type(self):
+        """
+        Test if objects with sub_type 'x' are found - there should be none. This raises a warning. The resulting array has length zero.
+        """
+        sub_type = "x"
+        DEBUG.verbose("\nWarning is intentional", True) 
+        array = self.oa.list_objects_with_sub_type(sub_type = sub_type, flag_verbose = self.flag_verbose)       
+        self.assertTrue(len(array) == 0)        
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
 
-    if args.skip1 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 1: object array, no pickle", True)
+    execute(args)
     
-    
-    if args.skip2 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_pickle)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 2: object array, with pickle", True)    
-    
-    if args.skip3 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_print_objects)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 3: print objects", True)        
-    
-    if args.skip4 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_ObjectArray_add_array_with_objects)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 4: add array with objects", True)         
-    
-    if args.skip5 == False:
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test_save_objectArray)
-        unittest.TextTestRunner(verbosity=1).run(suite)    
-    else:
-        DEBUG.verbose("Skipping suite 5: save object_array", True)      
-    
-  
+
     
     
     
