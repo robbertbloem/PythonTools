@@ -1,7 +1,6 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
-from __future__ import unicode_literals
 
 import inspect
 import shelve
@@ -265,11 +264,13 @@ class objectarray(CT.ClassTools):
         self.verbose("Print objects", flag_verbose)
         if index > len(self.obj_array) - 1:
             self.printError("Index is out of bounds.", inspect.stack())
+            return False
         elif index > -1:
             print(self.obj_array[index])
         else:
             for i in self.obj_array:
                 print(i)
+        return True
 
 
     def print_object_ids(self, flag_verbose = False):

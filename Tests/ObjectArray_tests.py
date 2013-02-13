@@ -1,7 +1,8 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
-from __future__ import unicode_literals
+
+from imp import reload
 
 import argparse
 import unittest
@@ -142,7 +143,7 @@ class Test_ObjectArray(unittest.TestCase):
 
 
 
-# @unittest.skipIf(args.skip2 == True, "Skipping suite 2")
+
 class Test_ObjectArray_pickle(unittest.TestCase):
     """
     Test case suite for functions that need a pickle.
@@ -175,6 +176,7 @@ class Test_ObjectArray_pickle(unittest.TestCase):
         oa.add_object(b, flag_verbose = self.flag_verbose)
         oa.add_object(c, flag_verbose = self.flag_verbose)
         
+        DEBUG.verbose("\nOverwrite warning is intentional", True)
         oa.save_objectarray(self.path_and_filename, flag_overwrite = True, flag_verbose = self.flag_verbose)
         
         self.obj_id_array = oa.obj_id_array
@@ -261,17 +263,24 @@ class Test_ObjectArray_print_objects(unittest.TestCase):
         self.oa.add_object(c, flag_verbose = self.flag_verbose)
 
     def test_print_objects_1(self):
-        self.oa.print_objects(flag_verbose = self.flag_verbose)
+        DEBUG.verbose("\n3 objects printed", True) 
+        res = self.oa.print_objects(flag_verbose = self.flag_verbose)
+        self.assertTrue(res)
 
     def test_print_objects_2(self):
-        self.oa.print_objects(index = -1, flag_verbose = self.flag_verbose)
+        DEBUG.verbose("\n3 objects printed", True) 
+        res = self.oa.print_objects(index = -1, flag_verbose = self.flag_verbose)
+        self.assertTrue(res)
         
     def test_print_objects_3(self):
         DEBUG.verbose("\nWarning is intentional", True) 
-        self.oa.print_objects(index = 4, flag_verbose = self.flag_verbose)
+        res = self.oa.print_objects(index = 4, flag_verbose = self.flag_verbose)
+        self.assertFalse(res)
 
     def test_print_objects_4(self):
-        self.oa.print_objects(index = 1, flag_verbose = self.flag_verbose)
+        DEBUG.verbose("\n1 object printed", True) 
+        res = self.oa.print_objects(index = 1, flag_verbose = self.flag_verbose)
+        self.assertTrue(res)
         
 
 class Test_ObjectArray_add_array_with_objects(unittest.TestCase):
@@ -356,20 +365,22 @@ class Test_save_objectArray(unittest.TestCase):
         a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
 
         oa.add_object(a, flag_verbose = self.flag_verbose)
-
+        DEBUG.verbose("\nOverwrite warning is intentional", True)
         oa.save_objectarray(self.path_and_filename, flag_overwrite = True, flag_verbose = self.flag_verbose)
 
 
     def test_obj_id_unicode(self):
-    
+        """
+        This testcase may be unnecesary. If you use from __future__ import unicode_literals, then somes strings are suddenly unicode, giving problems when saving the database. However, in Python 3.3 they removed this. Without the __future__ thingy it also works fine in Python 2.7.
+        """
         oa = OA.objectarray("test")
         
         l = ["auto"]
         
         a = OA.testobject(l[0], "a", "power", flag_verbose = self.flag_verbose)
         oa.add_object(a, flag_verbose = self.flag_verbose)
-        
-        oa.save_objectarray(self.path_and_filename, flag_verbose = self.flag_verbose)
+        DEBUG.verbose("\nOverwrite warning is intentional", True)
+        oa.save_objectarray(self.path_and_filename, flag_overwrite = True, flag_verbose = self.flag_verbose)
 
 
 

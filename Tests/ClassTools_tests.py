@@ -1,5 +1,6 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import absolute_import
 
 import argparse
 import unittest
@@ -40,15 +41,37 @@ class Test_ClassTools_debug(unittest.TestCase):
     def setUp(self):
         self.obj = CT.ClassTools()
         
-    def test_verbose(self):      
-        self.obj.verbose("\ntest verbose", True)
+    def test_verbose(self): 
+        print()     
+        self.obj.verbose("Test verbose string", True)
 
+    def test_verbose_unicode(self): 
+        print()  
+        self.obj.verbose(u"Test verbose unicode", True)
+    
     def test_printError(self):
-        self.obj.printError("Error test", inspect.stack())   
+        print()
+        self.obj.printError("Error test", inspect.stack()) 
+
+    def test_printError_unicode(self):
+        print() 
+        self.obj.printError(u"Error test unicode", inspect.stack())   
+
+    def test_printError_no_location(self):
+        print()
+        self.obj.printError("Error test - no location") 
 
     def test_printWarning(self):
+        print() 
         self.obj.printWarning("Warning test", inspect.stack())  
 
+    def test_printWarning_unicode(self):
+        print() 
+        self.obj.printWarning(u"Warning test unicode", inspect.stack()) 
+
+    def test_printWarning_no_location(self):
+        print() 
+        self.obj.printWarning("Warning test - no location")  
 
 
 class Test_ClassTools_format_print(unittest.TestCase):
