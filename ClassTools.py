@@ -59,7 +59,7 @@ def format_print(var):
     # list
     if type(var) == list:
         typ = list(range(len(var)))
-        for i in list(range(0, len(var))):
+        for i in range(0, len(var)):
             typ[i] = (format_print(var[i]))
         return typ
     # ndarray
