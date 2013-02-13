@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import argparse
 import unittest
@@ -22,6 +24,7 @@ parser.add_argument("-s1", "--skip1", action="store_true", help="Skip testing su
 parser.add_argument("-s2", "--skip2", action="store_true", help="Skip testing suite 2: object array, with pickle")
 parser.add_argument("-s3", "--skip3", action="store_true", help="Skip testing suite 3: print objects")
 parser.add_argument("-s4", "--skip4", action="store_true", help="Skip testing suite 4: add array with objects")
+parser.add_argument("-s5", "--skip5", action="store_true", help="Skip testing suite 5: save object_array")
 
 # process
 args = parser.parse_args()
@@ -172,7 +175,7 @@ class Test_ObjectArray_pickle(unittest.TestCase):
         oa.add_object(b, flag_verbose = self.flag_verbose)
         oa.add_object(c, flag_verbose = self.flag_verbose)
         
-        oa.save_objectarray(self.path_and_filename, flag_verbose = self.flag_verbose)
+        oa.save_objectarray(self.path_and_filename, flag_overwrite = True, flag_verbose = self.flag_verbose)
         
         self.obj_id_array = oa.obj_id_array
 
@@ -218,6 +221,11 @@ class Test_ObjectArray_pickle(unittest.TestCase):
         oa = OA.objectarray("test_new")
         oa.load_objectarray(self.path_and_filename, obj_id_array_in = obj_id_array, flag_verbose = self.flag_verbose) 
         self.assertTrue(["a", "b"] ==  oa.obj_id_array)
+
+
+
+
+
 
 
         
@@ -320,6 +328,53 @@ class Test_ObjectArray_add_array_with_objects(unittest.TestCase):
 
 
 
+class Test_save_objectArray(unittest.TestCase):
+    """
+
+
+    CHANGELOG:
+    20130213/RB: started the class
+
+    """
+
+
+    #############
+    ### SETUP ###
+    #############
+    def setUp(self):
+        """
+        Set up a pickle for use in this function.
+        """
+
+        self.path_and_filename = "/Users/robbert/Developer/PythonTools/temp/test.pickle"
+        self.flag_verbose = args.verbose
+
+    def test_obj_id_str(self):
+
+        oa = OA.objectarray("test")
+        
+        a = OA.testobject("Auto", "a", "power", flag_verbose = self.flag_verbose)
+
+        oa.add_object(a, flag_verbose = self.flag_verbose)
+
+        oa.save_objectarray(self.path_and_filename, flag_overwrite = True, flag_verbose = self.flag_verbose)
+
+
+    def test_obj_id_unicode(self):
+    
+        oa = OA.objectarray("test")
+        
+        l = ["auto"]
+        
+        a = OA.testobject(l[0], "a", "power", flag_verbose = self.flag_verbose)
+        oa.add_object(a, flag_verbose = self.flag_verbose)
+        
+        oa.save_objectarray(self.path_and_filename, flag_verbose = self.flag_verbose)
+
+
+
+
+
 if __name__ == '__main__':
 
     if args.skip1 == False:
@@ -347,7 +402,11 @@ if __name__ == '__main__':
     else:
         DEBUG.verbose("Skipping suite 4: add array with objects", True)         
     
-    
+    if args.skip5 == False:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_save_objectArray)
+        unittest.TextTestRunner(verbosity=1).run(suite)    
+    else:
+        DEBUG.verbose("Skipping suite 5: save object_array", True)      
     
   
     
