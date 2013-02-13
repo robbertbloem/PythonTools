@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import inspect
 import shelve
@@ -150,7 +152,7 @@ class objectarray(CT.ClassTools):
         # save it
         db = shelve.open(path_and_filename, flag = flag_overwrite)
         for object in self.obj_array:
-            db[object.obj_id] = object
+            db[str(object.obj_id)] = object
         db.close()
         os.system("chmod 777 " + path_and_filename)
         
