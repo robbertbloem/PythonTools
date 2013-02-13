@@ -56,7 +56,6 @@ def execute(args):
     else:
         DEBUG.verbose("Skipping: " + suite_list[0], True)
     
-    
     if args.skip2 == False:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_load_object_array)
         unittest.TextTestRunner(verbosity=1).run(suite)    
