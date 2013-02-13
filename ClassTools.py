@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import numpy
 import time
@@ -56,8 +58,8 @@ def format_print(var):
     """
     # list
     if type(var) == list:
-        typ = range(len(var))       
-        for i in range(0, len(var)):
+        typ = list(range(len(var)))
+        for i in list(range(0, len(var))):
             typ[i] = (format_print(var[i]))
         return typ
     # ndarray
