@@ -5,6 +5,8 @@ import argparse
 import unittest
 import inspect
 
+from imp import reload
+
 import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
