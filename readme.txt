@@ -57,11 +57,29 @@ Read more about test driven development: https://en.wikipedia.org/wiki/Test-driv
 
 
 
+4 - DEVELOPMENT NOTES
+
+4.1 - TESTS
+
+Use tests, as described in 3.5.
 
 
+4.2 - PYTHON 3 COMPATIBILITY
 
+Summary: the scripts were developed in Python 2.7 and were tested with 3.3. The scripts don't work in Python 3.0-3.2. 
 
+The scripts are written in Python 2.7. Using the following __future__ imports the scripts have maximum compatibility for Python 3.
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+A fourth __future__ import
+from __future__ import unicode literals
+is not used. It is a bag of hurt to make sure something is a string or unicode. From Python 3.3 this is changed back to the situation of 2.7. 
+
+Note that 
+from imp import reload 
+is needed to reload modules in Python 3.
 
 
 
