@@ -62,17 +62,18 @@ def format_print(var):
             typ[i] = (format_print(var[i]))
         return typ
     # ndarray
-    elif type(var) == numpy.ndarray:
+    # memmap is when the array is imported a file, but not actually read until it is used (saves a lot of time for large data sets). 
+    elif type(var) == numpy.ndarray or type(var) == numpy.core.memmap:
         a = numpy.shape(var)
         if len(a) == 1: 
             return str(a[0]) + " x 1"
-        elif len(a) == 2:
-            return str(a[0]) + " x " + str(a[1])
-        elif len(a) == 3:
-            return str(a[0]) + " x " + str(a[1]) + " x " + str(a[2])
+        else:
+            s = "{a}".format(a = a[0])
+            a = a[1:]
+            for _a in a:
+                s = "{s} x {a}".format(s = s, a = _a)
+            return s
 
-        else: 
-            return str(a[0]) + " x " + str(a[1]) + " x " + str(a[2]) + " x ..."
     # time
     elif type(var) == time.struct_time: 
         var = time.strftime("%a, %d %b %Y %H:%M:%S", var)
