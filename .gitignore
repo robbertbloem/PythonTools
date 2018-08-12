@@ -1,3 +1,4 @@
 *.pyc
 *.pickle
 temp/
+Tests/TestResources/Activities.csv
