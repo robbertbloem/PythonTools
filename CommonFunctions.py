@@ -42,6 +42,40 @@ def make_numpy_ndarray(val, verbose = 0):
         return numpy.array(list(val))
     else:
         return numpy.array([val]) 
+
+
+
+def make_range(start, finish, step, match = "middle", verbose = 0):
+    """
+    In most cases, start, stop and step do not match. For example: numpy.arange(0, 40, 10) >>> [0, 10, 20, 30]
+    
+    
+    
+    INPUT:
+    - match: 
+        - 'begin', the behavior is as numpy.arange() >>> [0, 10, 20, 30]
+        - 'middle': >>> [5, 15, 25, 35]
+        - 'end': >>>[10, 20, 30, 40]
+
+    2019-01-xx/RB: started function
+    2019-02-15/RB: moved to PythonTools
+    """
+    if verbose > 1:
+        print("SpectraTools.Resources.CommonFunctions:make_range()")
+        
+    if match == "begin":
+        return numpy.arange(start, finish, step)
+    
+    elif match == "middle":        
+        n_steps = (finish - start) // step        
+        r = (finish - start - (n_steps - 1) * step) / 2        
+        return numpy.arange(start + r, finish, step)
+        
+    elif match == "end":
+        x = numpy.arange(start, finish, step)
+        return x + (finish - x[-1])
+  
+
         
 
 def string_with_numbers_to_list(string):
