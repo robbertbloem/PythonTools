@@ -1,13 +1,5 @@
-# test voor Cjestmir
-# from importlib import reload
-# import inspect
-# import os
-# import warnings
-
 import re
 import numpy
-# import matplotlib 
-
 
 
 def make_numpy_ndarray(val, verbose = 0):
