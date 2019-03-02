@@ -16,34 +16,58 @@ class ClassTools(object):
     """
     A way to print the whole class in one go. It prints the key and the value. Adapted from 'Learning Python', 4th edition, by Mark Lutz.
     
-    The printError, printWarning and verbose are my own idea, no need to blame the book there.
     """
 
     def gatherAttrs(self):
+        """
+        Gathers the attributes of a class, so that they can be printed.
+        
+        Notes
+        -----
+        
+        - 2011-??-??/RB: copied function from book
+        """
         attrs=[]
         for key in sorted(self.__dict__):
             attrs.append("\t%20s  =  %s\n" % (format_key(key), format_print(getattr(self, key))))
         return " ".join(attrs)
 
     def __str__(self):
+        """
+        Defines that the class can be printed as a string.
+
+        Notes
+        -----
+        
+        - 2011-??-??/RB: copied function from book
+        """
         return "[%s:\n %s]" % (self.__class__.__name__, self.gatherAttrs())
 
 
        
 def format_print(var):
     """
-    format_print is a helper function for the gatherAttrs function. 
-    There are a few situations:
-        1) var is not a list or an ndarray, it will print the value. This include tuples
-        2) var is an ndarray, the shape will be printed
-        3) var is a time. It will return a readable string with the time.
-        3) the var is a list, it will do recursion to print either 1 or 2
-    Examples:
-        42          => 42
-        "car"       => "car"
-        [1,2]       => [1,2]
-        ndarray     => shape
-        [1,ndarray] => [1, shape]
+    format_print is a helper function for the gatherAttrs function to print variables in a neat way. There are a few situations:
+    
+    1. var is not a list or an ndarray, it will print the value. This include tuples
+    2. var is an ndarray, the shape will be printed
+    3. var is a time. It will return a readable string with the time.
+    4. the var is a list, it will do recursion to print either 1 or 2
+        
+    Examples
+    --------
+    - 42          => 42
+    - "car"       => "car"
+    - [1,2]       => [1,2]
+    - ndarray     => shape
+    - [1,ndarray] => [1, shape]
+    
+    
+    Notes
+    ---------
+    
+    - 2011-??-??/RB: started function  
+    
     """
     # list
     if type(var) == list:
@@ -81,6 +105,11 @@ def format_print(var):
 def format_key(key):
     """
     Strips keys from _. These keys are semi-protected and should be run through the getter and setter methods.
+    
+    Notes
+    -----
+    
+    - 20??-??-??/RB: started function
     """
     if key[0] == "_":
         key = key[1:]
