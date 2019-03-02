@@ -8,17 +8,21 @@ def make_numpy_ndarray(val):
     make a numpy.ndarray out of val, used by make_coordinates()
     
     Types of val that are accepted:        
-    int, float, string: make it a list and then numpy.ndarray.
-    list: make it a numpy.ndarray
-    tuple: convert to a list, then numpy.ndarray
-    numpy.ndarray: return directly
+    
+    - int, float, string: make it a list and then numpy.ndarray.
+    - list: make it a numpy.ndarray
+    - tuple: convert to a list, then numpy.ndarray
+    - numpy.ndarray: return directly
     
     Not accepted:
-    dict
     
-    CHANGELOG:
-    20130317/RB: started
-    20190214/RB: changed call to DEBUG with a simple print statement
+    - dict
+    
+    Notes
+    -----
+    
+    - 2013-03-17/RB: started
+    - 2019-02-14/RB: changed call to DEBUG with a simple print statement
     """
             
     if type(val) == numpy.ndarray:
@@ -41,8 +45,10 @@ def find_longest_list(*kwargs):
     It does not check if it is actually a list.
     Used by make_coordinates()
     
-    CHANGELOG:
-    20130317/RB: started
+    Notes
+    -----
+    
+    - 2013-03-17/RB: started
     
     """
     
@@ -60,7 +66,8 @@ def make_coordinates(inch_per_unit, x_units, y_units, left, bottom, width,
 height, flag_verbose = False):
     
     """
-    
+    Simplifies formatting of plots. 
+ 
     matplotlib.figure.add_axes() requires coordinates (left, bottom, width, 
     height) for each axes instance. The values are between 0 and 1. There are 
     two problems. 
@@ -76,80 +83,90 @@ height, flag_verbose = False):
     square. When you resize the figure (change x_units) the margins, which are 
     in units, will remain the same.     
     
-    INPUT:
-    - inch_per_unit (number): used to scale to inches
-    - x_units, y_units (number): width and height of the figure, in units
-    - left, bottom, width, height (numpy.ndarray with ints and/or floats, also 
-    accepts list or int or float): the positions of the axes. The longest list 
-    determines the number of plots. Shorter lists are cycled. 
+    Arguments
+    ---------
     
-    OUTPUT:
-    - figsize: tuple that is accepted by plt.figure(figsize = figsize)
-    - coords, a list with tuples with (l,b,w,h). The tuples are accepted by 
-    fig.add_axes((l,b,w,h)). 
+    inch_per_unit : number 
+        used to scale to inches
+    x_units, y_units : number 
+        width and height of the figure, in units
+    left, bottom, width, height : numpy.ndarray 
+        with ints and/or floats, also accepts list or int or float) the positions of the axes. The longest list determines the number of plots. Shorter lists are cycled. 
+    
+    Returns
+    -------
+    figsize : tuple
+        a tuple that is accepted by plt.figure(figsize = figsize)
+    coords : list with tuples 
+        a list with tuples with (l,b,w,h) for the axes. The tuples are accepted by fig.add_axes((l,b,w,h)). 
 
    
-    EXAMPLE 1:
+    Examples
+    --------
 
-    Three plots next to each other. 
+    1. Three plots next to each other. 
     
-    01234567
-    1 x  x x
-    0xxxxxxx
+    ::
     
-    x_units = 8
-    y_units = 3
-    left = [1,3,6]  #
-    bottom = 1      # [1], [1,1], [1,1,1] 
-                    # not [1,1,1,1], that gives extra subplot
-    width = [1,2]   # [1,2,1]
-    height = 1      # [1], [1,1], [1,1,1]
-    
-    
-    EXAMPLE 2:
-    
-    Four equally sized and spaced plots.
-    
-    01234
-    3 x x
-    2xxxx
-    1 x x 
-    0xxxx
-    
-    inch_per_unit = 1.0
-    x_units = 5
-    y_units = 5
-    left = [1,3]        # [1,3,1,3]
-                        # not [1,3,1], that would give: [1,3,1,1]
-    bottom = [3,3,1,1]  #
-    width = 1           # [1], [1,1], [1,1,1], [1,1,1,1]
-    height = 1          # [1], [1,1], [1,1,1], [1,1,1,1]
-    
+        01234567
+        1 x  x x
+        0xxxxxxx
 
-    EXAMPLE 3:
+        x_units = 8
+        y_units = 3
+        left = [1,3,6]  #
+        bottom = 1      # [1], [1,1], [1,1,1] 
+                        # not [1,1,1,1], that gives extra subplot
+        width = [1,2]   # [1,2,1]
+        height = 1      # [1], [1,1], [1,1,1]
+    
+    
+    2. Four equally sized and spaced plots.
+    
+    ::
+    
+        01234
+        3 x x
+        2xxxx
+        1 x x 
+        0xxxx
         
-    A complex arrangement. All coordinates are explicitly given. 
+        inch_per_unit = 1.0
+        x_units = 5
+        y_units = 5
+        left = [1,3]        # [1,3,1,3]
+                            # not [1,3,1], that would give: [1,3,1,1]
+        bottom = [3,3,1,1]  #
+        width = 1           # [1], [1,1], [1,1,1], [1,1,1,1]
+        height = 1          # [1], [1,1], [1,1,1], [1,1,1,1]
     
-    01234567
-    6   x  x
-    5   x  x
-    4xxxx  x
-    3  xxxxx
-    2  x   x
-    1  x   x
-    0xxxxxxx   
 
-    x_units = 8
-    y_units = 8
-    left = [1,5,1,4]
-    bottom = [5,4,1,1]
-    width = [3,2,2,3]
-    height = [2,3,3,2]    
+    3. A complex arrangement. All coordinates are explicitly given. 
+    
+    ::
+        
+        01234567
+        6   x  x
+        5   x  x
+        4xxxx  x
+        3  xxxxx
+        2  x   x
+        1  x   x
+        0xxxxxxx   
+
+        x_units = 8
+        y_units = 8
+        left = [1,5,1,4]
+        bottom = [5,4,1,1]
+        width = [3,2,2,3]
+        height = [2,3,3,2]    
     
     
     
-    CHANGELOG:
-    20130317/RB: started   
+    Notes
+    -----
+    
+    - 2013-03-17/RB: started   
     
      
     """ 

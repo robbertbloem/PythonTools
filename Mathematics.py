@@ -35,54 +35,69 @@ def fit(x_array, y_array, function, A_start, return_all = False):
     """
     Fit data
     
-    20101209/RB: started
-    20130131/RB: imported in Crocodile, added example to doc-string
 
-    INPUT:
-    x_array: the array with time or something
-    y-array: the array with the values that have to be fitted
-    function: one of the functions, in the format as in the file "Equations"
-    A_start: a starting point for the fitting
-    return_all: the function used to return only the final result. The leastsq method does however return more data, which may be useful for debugging. When the this flag is True, it will return these extras as well. For legacy purposes the default is False. See reference of leastsq method for the extra output: http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html
+
+    Arguments
+    ---------
+    x_array : ndarray 
+        the array with time or something
+    y-array : ndarray 
+        the array with the values that have to be fitted
+    function : function
+        one of the functions, in the format: function(A, t), where A are the function arguments and t is the variable.
+    A_start : list
+        a starting point for the fitting
+    return_all : bool
+        the function used to return only the final result. The leastsq method does however return more data, which may be useful for debugging. When the this flag is True, it will return these extras as well. For legacy purposes the default is False. See reference of leastsq method for the extra output: http://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.leastsq.html
     
-    OUTPUT:
-    A_final: the final parameters of the fitting
+    Returns
+    -------
+    A_final : list
+        the final parameters of the fitting
+    
     When return_all == True:
-    - cov_x (ndarray): Uses the fjac and ipvt optional outputs to construct an estimate of the jacobian around the solution. None if a singular matrix encountered (indicates very flat curvature in some direction). This matrix must be multiplied by the residual variance to get the covariance of the parameter estimates - see curve_fit.
-    - infodict (dict): a dictionary of optional outputs with the key s:
+    cov_x : ndarray
+        Uses the fjac and ipvt optional outputs to construct an estimate of the jacobian around the solution. None if a singular matrix encountered (indicates very flat curvature in some direction). This matrix must be multiplied by the residual variance to get the covariance of the parameter estimates - see curve_fit.
+    infodict : (dict)
+        a dictionary of optional outputs with the key s:
+        
         - "nfev" : the number of function calls
         - "fvec" : the function evaluated at the output
-        - "fjac" : A permutation of the R matrix of a QR
-                 factorization of the final approximate
-                 Jacobian matrix, stored column wise.
-                 Together with ipvt, the covariance of the
-                 estimate can be approximated.
-        - "ipvt" : an integer array of length N which defines
-                 a permutation matrix, p, such that
-                 fjac*p = q*r, where r is upper triangular
-                 with diagonal elements of nonincreasing
-                 magnitude. Column j of p is column ipvt(j)
-                 of the identity matrix.
+        - "fjac" : A permutation of the R matrix of a QR factorization of the final approximate Jacobian matrix, stored column wise. Together with ipvt, the covariance of the estimate can be approximated.
+        - "ipvt" : an integer array of length N which defines a permutation matrix, p, such that fjac*p = q*r, where r is upper triangular with diagonal elements of nonincreasing magnitude. Column j of p is column ipvt(j) of the identity matrix.
         - "qtf"  : the vector (transpose(q) * fvec).
-    - mesg (str): A string message giving information about the cause of failure.
-    - ier (int): An integer flag. If it is equal to 1, 2, 3 or 4, the solution was found. Otherwise, the solution was not found. In either case, the optional output variable "mesg" gives more information.
+    mesg : str A
+        string message giving information about the cause of failure.
+    ier : int
+        An integer flag. If it is equal to 1, 2, 3 or 4, the solution was found. Otherwise, the solution was not found. In either case, the optional output variable "mesg" gives more information.
 
 
-    EXAMPLE:
-    Fit some data to this function from Crocodile.Resources.Equations:
-    def linear(A, t):
-        return A[0] + A[1] * t  
+    Examples
+    --------
     
-    ### 
-    x = x-axis
-    y = some data
-    A = [0,1] # initial guess
-    A_final = fit(x, y, Crocodile.Resources.Equations.linear, A)
-    ###
+    Fit some data to this function from Equations:
+    
+    ::
+    
+        def linear(A, t):
+            return A[0] + A[1] * t  
+        
+        ### 
+        x = x-axis
+        y = some data
+        A = [0,1] # initial guess
+        A_final = fit(x, y, Equations.linear, A)
+        ###
     
     WARNING:
     Always check the result, it might sometimes be sensitive to a good starting point.
 
+    Notes
+    -----
+    
+    - 2010-12-09/RB: started
+    - 2013-01-31/RB: imported in Crocodile, added example to doc-string
+    
     """
     if scipy_import:
         param = (x_array, y_array, function)
@@ -100,23 +115,30 @@ def fit(x_array, y_array, function, A_start, return_all = False):
 
 def correlation_fft(a, v = -1, flag_normalize = True, flag_verbose = False):
     """
-    Calculate the autocorrelation using fft.
+    Calculate the autocorrelation using fft. This method was verified using a naive implementation in C. 
     
-    This method was verified using a naive implementation in C. 
+    Arguments
+    ---------
+    a,v : ndarray
+        the data, 1D array. If v == 1, the autocorrelation of a with a will be calculated. 
+    flag_normalize : Bool, True
+        if True, the starting value of the autocorrelation is 1. If not, it is an absolute value.
+    flag_verbose : Bool, False
+        if True, print some debugging stuff
     
-    INPUT:
-    - a, v (ndarray): the data, 1D array. If v == 1, the autocorrelation of a with a will be calculated. 
-    - flag_normalizae (Bool, True): if True, the starting value of the autocorrelation is 1. If not, it is an absolute value.
-    - flag_verbose (Bool, False): if True, print some debugging stuff
+    Returns
+    -------
+    r : ndarray
+        autocorrelation of array, normalized to the length or to 1, the real values   
     
-    OUTPUT:
-    - autocorrelation of array, normalized to the length or to 1, the real values   
+    Notes
+    -----
     
-    201202xx/RB: started function
-    20130205/RB: the function now uses an actual Fourier transform
-    20130207/RB: take the first part of the array, not the last part reversed. This was done to agree with Jan's correlation method, but now it seems that one is wrong.
-    20130515/RB: the result is now always divided by the length of the array and it gives the actual absolute value. Added some documentation
-    20160317/RB: added v, to calculate the correlation between two arrays. 
+    - 2012-02-xx/RB: started function
+    - 2013-02-05/RB: the function now uses an actual Fourier transform
+    - 2013-02-07/RB: take the first part of the array, not the last part reversed. This was done to agree with Jan's correlation method, but now it seems that one is wrong.
+    - 2013-05-15/RB: the result is now always divided by the length of the array and it gives the actual absolute value. Added some documentation
+    - 2016-03-17/RB: added v, to calculate the correlation between two arrays. 
     
     """
     
@@ -161,7 +183,23 @@ def correlation_fft(a, v = -1, flag_normalize = True, flag_verbose = False):
 
 def derivative(x, y):
     """
-    20110909/RB: rudimentary method to calculate the derivative
+    Very simplistic calculation of the derivative: it calculates dx/dy for all points
+    
+    Arguments
+    ---------
+    x,y : ndarray
+        Input arrays. It is assumed they are monotonous. 
+        
+        
+    Returns
+    -------
+    x_temp,y_temp : ndarray
+        
+    
+    Notes
+    -----
+    
+    - 2011-09-09/RB: rudimentary method to calculate the derivative
     """
 
     dx = x[1] - x[0]
@@ -184,9 +222,31 @@ def derivative(x, y):
 
 def interpolate_data(original_x, original_y, new_x, interpolate_kind = "default", verbose = 0):
     """
-    Interpolate data 
+    Interpolate data. Wrapper around scipy.interp1d, to include the calculation of new_y. 
     
-    kind = Specifies the kind of interpolation as a string ('linear', 'nearest', 'zero', 'slinear', 'quadratic, 'cubic', where 'slinear', 'quadratic' and 'cubic' refer to a spline interpolation of first, second or third order) or as an integer specifying the order of the spline interpolator to use. Default is 'linear'
+    Arguments
+    ---------
+    original_x : ndarray
+        The original x axis. It does not need to be monotoneous. 
+    original_y : ndarray
+        The original y values, belonging to original_x
+    new_x : ndarray
+        the new x axis. 
+    interpolate_kind : string
+        Specifies the kind of interpolation as a string ('linear', 'nearest', 'zero', 'slinear', 'quadratic, 'cubic', where 'slinear', 'quadratic' and 'cubic' refer to a spline interpolation of first, second or third order) or as an integer specifying the order of the spline interpolator to use. Default is 'linear'
+    verbose : int, 0
+        Print some extra information
+        
+    Returns
+    -------
+    new_y : ndarray
+        Values of y, belonging to new_x
+        
+    Notes
+    -----
+    
+    - 20??-??-??/RB: started function
+        
     """    
     
     if interpolate_kind == "default":
@@ -206,16 +266,28 @@ def interpolate_two_datasets(x1, y1, x2, y2, x_step = 1, interpolation_kind = "d
     """
     Take datasets 1 and 2 and unify the x-axis, interpolate the y-values of both for the new axis. The new x-axis will be only where x1 and x2 overlap. 
     
-    INPUTS:
-    x1, x2 (ndarray, list): x-axes of the data
-    y1, y2 (ndarray, list): y values of the data
-    x_step (number): step size of the x-axis of the interpolated data
-    interpolation_kind (string): Specifies the kind of interpolation as a string ('linear', 'nearest', 'zero', 'slinear', 'quadratic, 'cubic', where 'slinear', 'quadratic' and 'cubic' refer to a spline interpolation of first, second or third order) or as an integer specifying the order of the spline interpolator to use. Default is 'linear'
+    Arguments
+    ---------
+    x1,x2 : ndarray, list
+        x-axes of the data
+    y1,y2 : ndarray, list
+        y values of the data
+    x_step : number
+        step size of the x-axis of the interpolated data
+    interpolation_kind : string
+        Specifies the kind of interpolation as a string ('linear', 'nearest', 'zero', 'slinear', 'quadratic, 'cubic', where 'slinear', 'quadratic' and 'cubic' refer to a spline interpolation of first, second or third order) or as an integer specifying the order of the spline interpolator to use. Default is 'linear'
     
-    OUTPUTS:
-    new_x (ndarray): new x-axis
-    new_y1, new_y2 (ndarray): the interpolated values of y1 and y2
+    Returns
+    -------
+    new_x : ndarray
+        new x-axis
+    new_y1,new_y2 : ndarray
+        the interpolated values of y1 and y2
     
+    Notes
+    -----
+    
+    - 20??-??-??/RB: started function
     
     """
     
