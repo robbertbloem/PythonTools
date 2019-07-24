@@ -25,13 +25,15 @@ class Test_polynomial(unittest.TestCase):
         Basic test
         """
         tests = [
-            {"label": "Basic", "A": [1], "x": numpy.array([1]), "test": numpy.array([1])},
-            {"label": "", "A": [1,1], "x": numpy.array([1]), "test": numpy.array([2])},
-            {"label": "", "A": [1,1], "x": numpy.array([1,2]), "test": numpy.array([2,3])},
-            {"label": "", "A": [1,2], "x": numpy.array([1,2]), "test": numpy.array([3,5])},
-            {"label": "", "A": [1,1,1], "x": numpy.array([1,2]), "test": numpy.array([3, 7])},
-            {"label": "", "A": [0], "x": numpy.array([1]), "test": numpy.array([0])},
-            # {"label": "", "A": [], "x": numpy.array([]), "test": numpy.array([])},
+            {"label": "Test 1", "A": [1], "x": numpy.array([1]), "test": numpy.array([1])},
+            {"label": "Test 2", "A": [1,1], "x": numpy.array([1]), "test": numpy.array([2])},
+            {"label": "Test 3", "A": [1,1], "x": numpy.array([1,2]), "test": numpy.array([2,3])},
+            {"label": "Test 4", "A": [1,2], "x": numpy.array([1,2]), "test": numpy.array([3,5])},
+            {"label": "Test 5", "A": [1,1,1], "x": numpy.array([1,2]), "test": numpy.array([3, 7])},
+            {"label": "Test 6", "A": [0], "x": numpy.array([1]), "test": numpy.array([0])},
+            {"label": "Test 7 A is ndarray", "A": numpy.array([1,1]), "x": numpy.array([1,2]), "test": numpy.array([2,3])},
+            {"label": "Test 8 x is list", "A": [1,1], "x": [1,2], "test": numpy.array([2,3])},
+            {"label": "Test 9 x is tuple", "A": [1,1], "x": (1,2), "test": numpy.array([2,3])},
             # {"label": "", "A": [], "x": numpy.array([]), "test": numpy.array([])},
             # {"label": "", "A": [], "x": numpy.array([]), "test": numpy.array([])},
             # {"label": "", "A": [], "x": numpy.array([]), "test": numpy.array([])},
