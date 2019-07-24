@@ -50,7 +50,7 @@ def cos(A, x):
     """
     x = numpy.asarray(x)
     if len(A) != 4:
-        raise IndexError("rb_cos(): you should enter 4 parameters in list A.")
+        raise IndexError("PythonTools.Equations.cos(): you should enter 4 parameters in list A.")
     x = CF.make_numpy_ndarray(x)
     return A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * x + numpy.pi*A[3])
 
@@ -77,6 +77,8 @@ def single_exp(A,x):
         
     """
     x = numpy.asarray(x)
+    if len(A) != 2:
+        raise IndexError("PythonTools.Equations.single_exp(): you should enter 2 parameters in list A.")    
     return A[0] * numpy.exp(-x / A[1]) 
 
 
@@ -102,6 +104,8 @@ def double_exp(A,x):
     
     """
     x = numpy.asarray(x)
+    if len(A) != 4:
+        raise IndexError("PythonTools.Equations.double_exp(): you should enter 4 parameters in list A.")    
     return A[0] * numpy.exp(-x / A[1]) + A[2] * numpy.exp(-x / A[3])
 
 
@@ -125,6 +129,8 @@ def single_exp_offset(A,x):
     
     """
     x = numpy.asarray(x)
+    if len(A) != 3:
+        raise IndexError("PythonTools.Equations.single_exp_offset(): you should enter 3 parameters in list A.")    
     return A[0] * numpy.exp(-x / A[1]) + A[2]
 
 
@@ -153,6 +159,8 @@ def gaussian(A, x):
 
     """
     x = numpy.asarray(x)
+    if len(A) != 4:
+        raise IndexError("PythonTools.Equations.gaussian(): you should enter 4 parameters in list A.")    
     return ( A[3] / (A[0] * numpy.sqrt(2*numpy.pi)) ) * numpy.exp( -(x - A[1])**2 / (2 * A[0]**2) ) + A[2]
 
 
@@ -179,6 +187,8 @@ def lorentzian(A, x):
 
     """
     x = numpy.asarray(x)
+    if len(A) != 4:
+        raise IndexError("PythonTools.Equations.lorentzian(): you should enter 4 parameters in list A.")    
     return A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
 
 
@@ -210,4 +220,6 @@ def double_lorentzians(A, x):
     
     """
     x = numpy.asarray(x)
+    if len(A) != 8:
+        raise IndexError("PythonTools.Equations.double_lorentzians(): you should enter 8 parameters in list A.")    
     return lorentzian(A[:4], x) + lorentzian(A[4:], x)
