@@ -51,7 +51,6 @@ def cos(A, x):
     x = numpy.asarray(x)
     if len(A) != 4:
         raise IndexError("PythonTools.Equations.cos(): you should enter 4 parameters in list A.")
-    x = CF.make_numpy_ndarray(x)
     return A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * x + numpy.pi*A[3])
 
 
