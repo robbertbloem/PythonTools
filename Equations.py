@@ -33,7 +33,7 @@ def cos(A, x):
     
     ::
     
-        y = A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * x + A[3])
+        y = A[0] + A[1] * cos(2 * pi * A[2] * x + A[3])
 
     - A[0]: offset
     - A[1]: amplitude
@@ -63,7 +63,7 @@ def single_exp(A,x):
 
     ::
     
-        y = A[0] * numpy.exp(-x / A[1]) 
+        y = A[0] * exp(-x / A[1]) 
 
     - A[0]: Amplitude
     - A[1]: Decay rate        
@@ -87,7 +87,7 @@ def double_exp(A,x):
     
     ::
 
-        y = A[0] * numpy.exp(-x / A[1]) + A[2] * numpy.exp(-x / A[3])
+        y = A[0] * exp(-x / A[1]) + A[2] * exp(-x / A[3])
 
     - A[0]: Amplitude exponential 1
     - A[1]: Decay rate exponential 1
@@ -114,7 +114,7 @@ def single_exp_offset(A,x):
     Single exponential with offset. For an exponential decay without offset, use `single_exp`.
     ::
         
-        y = A[0] * numpy.exp(-x / A[1]) + A[2]
+        y = A[0] * exp(-x / A[1]) + A[2]
 
     - A[0]: Amplitude
     - A[1]: Decay rate
@@ -171,7 +171,7 @@ def lorentzian(A, x):
     
     ::
     
-        y = A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
+        y = A[3]/(pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
         
     - A[0]: gamma
     - A[1]: mean
@@ -198,8 +198,8 @@ def double_lorentzians(A, x):
     
     ::
     
-        y1 = A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
-        y2 = A[7]/(numpy.pi * A[4] * (1 + ((x - A[5])/A[4])**2)) + A[6]
+        y1 = A[3]/(pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
+        y2 = A[7]/(pi * A[4] * (1 + ((x - A[5])/A[4])**2)) + A[6]
         y = y1 + y2
         
     - A[0]: gamma Lorentzian 1
