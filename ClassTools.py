@@ -6,6 +6,7 @@ Some very general tools for working with classes. Most notably is a way to print
 """
 
 import numpy
+import pandas
 import time
 
 ##############
@@ -87,7 +88,12 @@ def format_print(var):
             for _a in a:
                 s = "{s} x {a}".format(s = s, a = _a)
             return s
-
+    elif type(var) == pandas.core.frame.DataFrame:
+        s = "Pandas DataFrame {:}".format(var.shape)
+        return s
+    elif type(var) == pandas.core.frame.Series:
+        s = "Pandas Series {:}".format(var.shape)
+        return s        
     # time
     elif type(var) == time.struct_time: 
         var = time.strftime("%a, %d %b %Y %H:%M:%S", var)

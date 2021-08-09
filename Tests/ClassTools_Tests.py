@@ -2,6 +2,8 @@ import argparse
 import unittest
 import inspect
 
+import pandas
+
 import importlib
 
 import numpy
@@ -183,6 +185,15 @@ class Test_format_print(unittest.TestCase):
         result = CT.format_print(99999999999999999999999)
         self.assertTrue(result == 99999999999999999999999) 
 
+    def test_format_pandas_dataframe(self):
+        df = pandas.DataFrame({'col1': [1, 2], 'col2': [3, 4]})
+        result = CT.format_print(df)
+        self.assertTrue(result == "Pandas DataFrame (2, 2)") 
+
+    def test_format_pandas_series(self):
+        ds = pandas.Series({'a': 1, 'b': 2, 'c': 3})
+        result = CT.format_print(ds)
+        self.assertTrue(result == "Pandas Series (3,)") 
 
 
 class Test_format_key(unittest.TestCase):
