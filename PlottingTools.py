@@ -211,16 +211,16 @@ def figure_sizes(name):
     
     """
     if name == "wide":
-        f = {"u": 1/2.54, "fig_w": 25, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 22.5, "ax_h": 12.5}
+        f = {"u": 1/2.54, "fig_w": 25, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 22.5, "ax_h": 13}
     elif name == "A4_landscape":
         f = {"u": 1/2.54, "fig_w": 29.7, "fig_h": 21.0, "l": 1.8, "b": 1.2, "ax_w": 27.2, "ax_h": 19}
     elif name == "A4_portrait":
         f = {"u": 1/2.54, "fig_w": 21.0, "fig_h": 29.7, "l": 1.8, "b": 1.2, "ax_w": 18.5, "ax_h": 27.7}
     elif name in ["standard", "std", "normal"]:
-        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 12.5}
+        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 13}
     else:
         warnings.warn("Unknown size format ({:}), use 'standard', 'wide', 'A4_landscape', or 'A4_portrait'. Will use default size.".format(name))
-        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 12.5} 
+        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 13} 
     return f
 
 
