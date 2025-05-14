@@ -10,7 +10,12 @@ Welcome to PythonTools!
    :maxdepth: 2
    :caption: Contents:
    
-   PythonTools
+   ClassTools
+   CommonFunctions
+   Constants
+   Equations
+   Mathematics
+   PlottingTools
    
    
 
