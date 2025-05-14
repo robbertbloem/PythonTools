@@ -19,15 +19,12 @@ def make_numpy_ndarray(val, verbose = 0):
     
     - dict
     
-    Notes
-    -----
-    
-    - 2013-03-17/RB: started
-    - 2017-03-10/RB: raise a type error for dict, instead of my own error
-    - 2019-01-11/RB: copied to SpectraTools
-    - 2019-02-15/RB: moved to PythonTools
-    
     """
+#     - 2013-03-17/RB: started
+#     - 2017-03-10/RB: raise a type error for dict, instead of my own error
+#     - 2019-01-11/RB: copied to SpectraTools
+#     - 2019-02-15/RB: moved to PythonTools
+
     if verbose > 1:
         print("PythonTools.CommonFunctions:make_numpy_ndarray()")
             
@@ -69,12 +66,11 @@ def make_range(start, finish, step, match = "middle", verbose = 0):
         >>> make_range(0, 40, 10, match = "end")
         [10, 20, 30, 40]
 
-    Notes
-    -----
-    
-    - 2019-01-xx/RB: started function
-    - 2019-02-15/RB: moved to PythonTools
     """
+    
+#     - 2019-01-xx/RB: started function
+#     - 2019-02-15/RB: moved to PythonTools
+
     if verbose > 1:
         print("SpectraTools.Resources.CommonFunctions:make_range()")
         
@@ -103,13 +99,12 @@ def string_with_numbers_to_list(string):
     
     >>> "0, 0.1,\\n 1e+3 1e-2"
     [0.0, 0.1, 1000, 0.01]
-
-    Notes
-    -----
     
-    - 2017-03-09/RB: started
-    - 2019-02-15/RB: moved to PythonTools
     """
+ 
+#     - 2017-03-09/RB: started
+#     - 2019-02-15/RB: moved to PythonTools
+
     
     string = string.replace("\n", " ")
     # remove everything, except \d (numbers), \s (spaces), . (decimal), e (exponent), +, - (signs)
@@ -128,7 +123,7 @@ def string_with_numbers_to_list(string):
 
 def make_path_and_filename(path, filename = None, extension = None, string_out = False, verbose = 0):
     """
-    Concatenate a path and filename (and extension).
+    Concatenate a path and filename (and extension). Both, none or either can be a pathlib object or string.
     
     Arguments
     ---------
@@ -140,15 +135,9 @@ def make_path_and_filename(path, filename = None, extension = None, string_out =
         Extension of the file. Optional, can be included in the path or filename. Uses pathlib.with_suffix.
     string_out : bool (False)
         If False (default), the output is a pathlib-object, otherwise the output is a string. 
-        
-        
-    Notes
-    -----
-    
-    - 2019-03-27/RB: started function 
-    
     
     """
+#     - 2019-03-27/RB: started function 
     
     if verbose > 1:
         print("PythonTools.CommonFunctions.make_path_and_filename()") 
@@ -171,8 +160,6 @@ def make_path_and_filename(path, filename = None, extension = None, string_out =
             filename = pathlib.Path(filename)
             
         paf = path / filename
-    
-    
     
     if extension is not None:
         
