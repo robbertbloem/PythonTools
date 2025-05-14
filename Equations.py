@@ -163,6 +163,40 @@ def gaussian(A, x):
     return ( A[3] / (A[0] * numpy.sqrt(2*numpy.pi)) ) * numpy.exp( -(x - A[1])**2 / (2 * A[0]**2) ) + A[2]
 
 
+def gaussian_2d(A, x, y):
+    """
+    
+    - A[0]: sigma x
+    - A[1]: mu x
+    - A[2]: sigma y
+    - A[3]: mu y   
+    - A[4]: theta (rotation)
+    - A[5]: amplitude
+    
+    
+    """
+    X, Y = numpy.meshgrid(x, y)
+    sigma_X = A[0]
+    X -= A[1]
+    sigma_Y = A[2]
+    Y -= A[3]
+    theta = A[4]
+    A = A[5]
+
+    if theta == 0:
+        a = 1 / (2 * sigma_X**2) 
+        b = 0
+        c = 1 / (2 * sigma_Y**2)
+    else:
+        a = numpy.cos(theta)**2 / (2 * sigma_X**2) + numpy.sin(theta)**2/(2 * sigma_Y**2)
+        b = -numpy.sin(2 * theta) / (4 * sigma_X**2) + numpy.sin(2 * theta) / (4 * sigma_Y**2)
+        c = numpy.sin(theta)**2/(2 * sigma_X**2) + numpy.cos(theta)**2 / (2 * sigma_Y**2)
+    
+    return A * numpy.exp( -(a * X**2 + 2 * b * X * Y + c * Y**2))
+    
+    
+    
+    
 
 def lorentzian(A, x):
     """
