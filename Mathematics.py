@@ -20,7 +20,7 @@ from scipy.interpolate import interp1d
 
 import itertools
 
-import PythonTools.Resources.CommonFunctions as CF
+import PythonTools.CommonFunctions as CF
 
 
 ### CODE FOR FITTING PROCEDURE ###
