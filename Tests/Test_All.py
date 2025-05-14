@@ -1,14 +1,50 @@
+import importlib
+
 import unittest
 
-start_dir = r"C:\Python\PythonTools"
-pattern = "*_tests.py"
+import PythonTools.Tests.ClassTools_Tests
+import PythonTools.Tests.CommonFunctions_Tests
+import PythonTools.Tests.Constants_Tests
+import PythonTools.Tests.Equations_Tests
+import PythonTools.Tests.Mathematics_Tests
+import PythonTools.Tests.PlottingTools_Tests
 
+importlib.reload(PythonTools.Tests.ClassTools_Tests)
+importlib.reload(PythonTools.Tests.CommonFunctions_Tests)
+importlib.reload(PythonTools.Tests.Constants_Tests)
+importlib.reload(PythonTools.Tests.Equations_Tests)
+importlib.reload(PythonTools.Tests.Mathematics_Tests)
+importlib.reload(PythonTools.Tests.PlottingTools_Tests)
+
+verbosity = 2
+
+TS = unittest.TestSuite()
 
 TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.ClassTools_Tests)
+TS.addTests(tests)
 
-tests = TL.discover(start_dir = start_dir, pattern = pattern)
+TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.CommonFunctions_Tests)
+TS.addTests(tests)
 
+TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.Constants_Tests)
+TS.addTests(tests)
 
-result = unittest.TextTestRunner(verbosity=1).run(tests)
+TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.Equations_Tests)
+TS.addTests(tests)
 
-print(result) 
+TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.Mathematics_Tests)
+TS.addTests(tests)
+
+TL = unittest.TestLoader()
+tests = TL.loadTestsFromModule(PythonTools.Tests.PlottingTools_Tests)
+TS.addTests(tests)
+
+result = unittest.TestResult()
+TS.run(result)
+
+print(result)
