@@ -3,71 +3,205 @@
 
 
 # SIMPLE EQUATIONS
-def polynomial(A, t):
+def polynomial(A, x):
     """
+    Polynomial
     
+    ::
+    
+        y = A[0] + A[1] * x + A[2] * x^2 + A[3] * x^3 + ... + A[n-1] * x^{n-1}
+    
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. A[0] is an offset.
+    x : array
+        Variable
+        
     """
     y = 0
     for i in range(len(A)):
-        y += A[i] * t**i
+        y += A[i] * x**i
     return y
 
 
 # GONIOMETRIC
-def cos(A, t):
+def cos(A, x):
     """
-    4 parameters
-    function: A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * t + A[3])
-    A[0]: offset
-    A[1]: amplitude
-    A[2]: frequency
-    A[3]: phase
+    Cosine
+    
+    ::
+    
+        y = A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * x + A[3])
+
+    - A[0]: offset
+    - A[1]: amplitude
+    - A[2]: frequency
+    - A[3]: phase
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable  
+        
     """
     A = CF.make_numpy_ndarray(A)
     if len(A) != 4:
         raise IndexError("rb_cos(): you should enter 4 parameters in list A.")
-    t = CF.make_numpy_ndarray(t)
-    return A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * t + numpy.pi*A[3])
+    x = CF.make_numpy_ndarray(x)
+    return A[0] + A[1] * numpy.cos(2 * numpy.pi * A[2] * x + numpy.pi*A[3])
 
 
 
 # EXPONENTIAL DECAYS
-def exp(A,t):
-    return A[0] * numpy.exp(-t / A[1]) 
+def single_exp(A,x):
+    """
+    Single exponential decay. For a single exponential with an offset, use `single_exp_offset`.
+
+    ::
+    
+        y = A[0] * numpy.exp(-x / A[1]) 
+
+    - A[0]: Amplitude
+    - A[1]: Decay rate        
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable   
+        
+    """
+    return A[0] * numpy.exp(-x / A[1]) 
 
 
-def double_exp(A,t):
-    return A[0] * numpy.exp(-t / A[1]) + A[2] * numpy.exp(-t / A[3])
+def double_exp(A,x):
+    """
+    
+    ::
+
+        y = A[0] * numpy.exp(-x / A[1]) + A[2] * numpy.exp(-x / A[3])
+
+    - A[0]: Amplitude exponential 1
+    - A[1]: Decay rate exponential 1
+    - A[2]: Amplitude exponential 2
+    - A[3]: Decay rate exponential 2           
+        
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable   
+    
+    """
+    return A[0] * numpy.exp(-x / A[1]) + A[2] * numpy.exp(-x / A[3])
 
 
-def single_exp_offset(A,t):
-    return A[0] * numpy.exp(-t / A[1]) + A[2]
+def single_exp_offset(A,x):
+    """
+    Single exponential with offset. For an exponential decay without offset, use `single_exp`.
+    ::
+        
+        y = A[0] * numpy.exp(-x / A[1]) + A[2]
+
+    - A[0]: Amplitude
+    - A[1]: Decay rate
+    - A[2]: Offset            
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable   
+    
+    """
+    return A[0] * numpy.exp(-x / A[1]) + A[2]
 
 
 # DISTRIBUTIONS
-def gaussian(A, t):
+def gaussian(A, x):
     """
-    A[0]: sigma (sigma^2 = variance)
-    A[1]: mu (mean)
-    A[2]: offset 
-    A[3]: scale, before offset
+    Gaussian
+    
+    ::
+    
+        a = A[3] / (A[0] * sqrt(2 * pi))
+        b = exp( -(x - A[1])**2 / (2 * A[0]**2) )
+        y = a * b + A[2]
+
+    - A[0]: sigma (sigma^2 = variance)
+    - A[1]: mu (mean)
+    - A[2]: offset 
+    - A[3]: scale, before offset
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable       
 
     """
-    y = ( A[3] / (A[0] * numpy.sqrt(2*numpy.pi)) ) * numpy.exp( -(t - A[1])**2 / (2 * A[0]**2) ) + A[2]
-    return y
+    return ( A[3] / (A[0] * numpy.sqrt(2*numpy.pi)) ) * numpy.exp( -(x - A[1])**2 / (2 * A[0]**2) ) + A[2]
 
 
-def lorentzian(A, t):
+
+def lorentzian(A, x):
     """
-    A[0]: gamma
-    A[1]: mean
-    A[2]: offset
-    A[3]: scale
+    Lorentzian
+    
+    ::
+    
+        y = A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
+        
+    - A[0]: gamma
+    - A[1]: mean
+    - A[2]: offset
+    - A[3]: scale        
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable       
+
     """
 
-    return A[3]/(numpy.pi * A[0] * (1 + ((t - A[1])/A[0])**2)) + A[2]
+    return A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
 
 
-def two_lorentzians(A, t):
-
-    return rb_lorentzian(A[:4], t) + rb_lorentzian(A[4:], t)
+def double_lorentzians(A, x):
+    """
+    Two Lorentzians
+    
+    ::
+    
+        y1 = A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
+        y2 = A[7]/(numpy.pi * A[4] * (1 + ((x - A[5])/A[4])**2)) + A[6]
+        y = y1 + y2
+        
+    - A[0]: gamma Lorentzian 1
+    - A[1]: mean Lorentzian 1
+    - A[2]: offset Lorentzian 1
+    - A[3]: scale Lorentzian 1
+    - A[4]: gamma Lorentzian 2
+    - A[5]: mean Lorentzian 2
+    - A[6]: offset Lorentzian 2
+    - A[7]: scale Lorentzian 2           
+        
+    Arguments
+    ---------
+    A : array-like 
+        List with coefficients. 
+    x : array
+        Variable       
+    
+    """
+    return lorentzian(A[:4], x) + lorentzian(A[4:], x)
