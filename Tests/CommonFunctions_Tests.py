@@ -56,8 +56,10 @@ class Test_make_path_and_filename(unittest.TestCase):
         
         for t in tests:
             paf = CF.make_path_and_filename(path = t["path"], filename = t["filename"], extension = t["extension"], string_out = t["string_out"])
-            self.assertTrue((type(paf) == str) == t["string_out"])
-            print(paf)
+            s = "{:} {:} {:} {:}".format(t["path"], t["filename"], t["extension"], t["string_out"])
+            with self.subTest(s): 
+                self.assertTrue((type(paf) == str) == t["string_out"])
+                print(paf)
 
 
         

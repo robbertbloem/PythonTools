@@ -163,8 +163,13 @@ def make_path_and_filename(path, filename = None, extension = None, string_out =
     
     if extension is not None:
         
-        if extension[0] != ".":
-            extension = ".{:s}".format(extension)
+        if type(extension) == str:
+
+            if str(extension[0]) != ".":
+                extension = ".{:s}".format(extension)
+        
+        elif type(extension) == path_type:
+            extension = str(extension)
             
         paf = paf.with_suffix(extension)
     
