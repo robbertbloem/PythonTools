@@ -1,4 +1,4 @@
-
+import numpy
 
 
 
@@ -19,6 +19,7 @@ def polynomial(A, x):
         Variable
         
     """
+    x = numpy.asarray(x)
     y = 0
     for i in range(len(A)):
         y += A[i] * x**i
@@ -47,7 +48,7 @@ def cos(A, x):
         Variable  
         
     """
-    A = CF.make_numpy_ndarray(A)
+    x = numpy.asarray(x)
     if len(A) != 4:
         raise IndexError("rb_cos(): you should enter 4 parameters in list A.")
     x = CF.make_numpy_ndarray(x)
@@ -75,6 +76,7 @@ def single_exp(A,x):
         Variable   
         
     """
+    x = numpy.asarray(x)
     return A[0] * numpy.exp(-x / A[1]) 
 
 
@@ -99,6 +101,7 @@ def double_exp(A,x):
         Variable   
     
     """
+    x = numpy.asarray(x)
     return A[0] * numpy.exp(-x / A[1]) + A[2] * numpy.exp(-x / A[3])
 
 
@@ -121,6 +124,7 @@ def single_exp_offset(A,x):
         Variable   
     
     """
+    x = numpy.asarray(x)
     return A[0] * numpy.exp(-x / A[1]) + A[2]
 
 
@@ -148,6 +152,7 @@ def gaussian(A, x):
         Variable       
 
     """
+    x = numpy.asarray(x)
     return ( A[3] / (A[0] * numpy.sqrt(2*numpy.pi)) ) * numpy.exp( -(x - A[1])**2 / (2 * A[0]**2) ) + A[2]
 
 
@@ -173,7 +178,7 @@ def lorentzian(A, x):
         Variable       
 
     """
-
+    x = numpy.asarray(x)
     return A[3]/(numpy.pi * A[0] * (1 + ((x - A[1])/A[0])**2)) + A[2]
 
 
@@ -204,4 +209,5 @@ def double_lorentzians(A, x):
         Variable       
     
     """
+    x = numpy.asarray(x)
     return lorentzian(A[:4], x) + lorentzian(A[4:], x)
