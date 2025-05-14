@@ -9,6 +9,7 @@ Without this script, use `pip list --outdated` to see the outdated modules and t
 """
 
 import subprocess
+import sys
 
 freeze = subprocess.check_output(["pip", "freeze"])
 list = subprocess.check_output(["pip", "list", "--outdated"])
