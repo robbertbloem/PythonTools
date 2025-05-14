@@ -4,7 +4,7 @@
 # import os
 # import warnings
 
-# import re
+import re
 import numpy
 # import matplotlib 
 
@@ -42,3 +42,32 @@ def make_numpy_ndarray(val, verbose = 0):
         return numpy.array(list(val))
     else:
         return numpy.array([val]) 
+        
+
+def string_with_numbers_to_list(string):
+    """
+    Receive a string with numbers, for example from a file, and make a ndarray out of it. The output type is always float. Commas and spaces indicate the separation between numbers and can be mixed. Newlines are removed.
+    
+    string = "0, 0.1,\n 1e+3 1e-2"
+    output: [0.0, 0.1, 1000, 0.01]
+
+    CHANGELOG:
+    20170309/RB: started
+    2019-02-15/RB: moved to PythonTools
+    """
+    
+    string = string.replace("\n", " ")
+    # remove everything, except \d (numbers), \s (spaces), . (decimal), e (exponent), +, - (signs)
+    non_decimal = re.compile(r'[^\d\s.eE+-]+')
+    res = non_decimal.sub('', string)
+    data = res.split(" ")
+    # remove excess spaces
+    data = list(filter(None, data))
+
+    data = numpy.array(data)
+    data = data.astype(float)
+
+    return data   
+
+
+        
