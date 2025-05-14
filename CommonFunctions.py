@@ -1,5 +1,7 @@
 import re
 import numpy
+import pathlib
+import os
 
 
 def make_numpy_ndarray(val, verbose = 0):
@@ -58,7 +60,7 @@ def make_range(start, finish, step, match = "middle", verbose = 0):
     Examples
     --------
 
-    ::
+
     
         >>> make_range(0, 40, 10, match = "begin")
         [0, 10, 20, 30]
@@ -99,9 +101,8 @@ def string_with_numbers_to_list(string):
     --------
     The following input:
     
-    ::
-        >>> "0, 0.1,\\n 1e+3 1e-2"
-        [0.0, 0.1, 1000, 0.01]
+    >>> "0, 0.1,\\n 1e+3 1e-2"
+    [0.0, 0.1, 1000, 0.01]
 
     Notes
     -----
@@ -122,6 +123,97 @@ def string_with_numbers_to_list(string):
     data = data.astype(float)
 
     return data   
+
+
+
+def make_path_and_filename(path, filename = None, extension = None, string_out = False, verbose = 0):
+    """
+    Concatenate a path and filename (and extension).
+    
+    Arguments
+    ---------
+    path : pathlib.Path or str
+        Path
+    filename : pathlib.Path or str (opt)
+        Filename. Optional, can be included in the path.
+    extension : str (opt)
+        Extension of the file. Optional, can be included in the path or filename. Uses pathlib.with_suffix.
+    string_out : bool (False)
+        If False (default), the output is a pathlib-object, otherwise the output is a string. 
+        
+        
+    Notes
+    -----
+    
+    - 2019-03-27/RB: started function 
+    
+    
+    """
+    
+    if verbose > 1:
+        print("PythonTools.CommonFunctions.make_path_and_filename()") 
+
+
+    if os.name == "posix":
+        path_type = pathlib.PosixPath
+    elif os.name == "nt":
+        path_type = pathlib.WindowsPath
+      
+
+    if filename is None:
+        paf = path
+        
+    else:
+        if type(path) == str:
+            path = pathlib.Path(path)
+        
+        if type(filename) == str:
+            filename = pathlib.Path(filename)
+            
+        paf = path / filename
+    
+    
+    
+    if extension is not None:
+        
+        if extension[0] != ".":
+            extension = ".{:s}".format(extension)
+            
+        paf = paf.with_suffix(extension)
+    
+    if string_out:
+        paf = str(paf)
+            
+    return paf    
+            
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         
