@@ -1,3 +1,5 @@
+import warnings
+
 import numpy
 import matplotlib 
 import matplotlib.pyplot as plt
@@ -194,9 +196,124 @@ height, flag_verbose = False):
         coords.append((l,b,w,h))
         
     return figsize, coords
+
+
+
     
+def figure_sizes(name):
+    """
+    Returns a dictionary with the coordinates for standard figure sizes. 
+    
+    Arguments
+    ---------
+    name : str {"standard", "wide", "A4_landscape", "A4_portrait"}
+        Name of the size.
+    
+    """
+    if name == "wide":
+        f = {"u": 1/2.54, "fig_w": 25, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 22.5, "ax_h": 12.5}
+    elif name == "A4_landscape":
+        f = {"u": 1/2.54, "fig_w": 29.7, "fig_h": 21.0, "l": 1.8, "b": 1.2, "ax_w": 27.2, "ax_h": 19}
+    elif name == "A4_portrait":
+        f = {"u": 1/2.54, "fig_w": 21.0, "fig_h": 29.7, "l": 1.8, "b": 1.2, "ax_w": 18.5, "ax_h": 27.7}
+    elif name in ["standard", "std", "normal"]:
+        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 12.5}
+    else:
+        warnings.warn("Unknown size format ({:}), use 'standard', 'wide', 'A4_landscape', or 'A4_portrait'. Will use default size.".format(name))
+        f = {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 12.5} 
+    return f
 
 
+
+def make_figures(figures, label = False):
+    """
+    Make a list with figures and axes. 
+    
+    Arguments
+    ---------
+    figures : list  
+        List with a dictionary with sizes, or a name for a pre-defined format. 
+    label : bool (False)
+        Label the numbers of the figures and axes, handy for debugging.
+        
+    Notes
+    -----
+    Predefined formats are: "standard" (25x15 cm), "wide" (29.7x21 cm), "A4_landscape", "A4_portrait". An unknown string will return a warning and the standard size.
+    
+    The dictionary contains:
+    
+    - `u`: units (optional). Use 1 for inches (default) and 1/2.54 for cm. The origin is that it means 'inch per unit'. 
+    - `fig_w`: width of the figure
+    - `fig_h`: height of the figure
+    - `l`: left side of the axis
+    - `b`: bottom of the axis
+    - `ax_w`: width of the axis
+    - `ax_h`: height of the axis
+    - `twinx`: (optional) list with y axes to be doubled 
+    - `twiny`: (optional) list with x axes to be doubled 
+    
+    For `twinx` and `twiny` the axis that is doubled is used. It is inserted after the original axis. 
+    
+    ::
+        figures = [
+            {"u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [5, 1.2], "ax_w": 17.5, "ax_h": [6,3], "twinx": [0]},  
+        ]
+
+    """
+
+    if type(figures) == dict:
+        figures = [figures]
+
+    n_fig = len(figures)
+        
+    fig = [0] * n_fig
+    ax = [0] * n_fig    
+    
+    for fig_i, f in enumerate(figures):
+    
+        if type(f) == str:
+            f = figure_sizes(f)
+        
+        if "u" not in f:
+            f["u"] = 1/2.54
+    
+        figsize, coords = make_coordinates(f["u"], f["fig_w"], f["fig_h"], f["l"], f["b"], f["ax_w"], f["ax_h"])
+        
+        n_ax = len(coords)
+        
+        if "twiny" in f:
+            n_ax += len(f["twiny"])
+            for i in f["twiny"]:
+                coords.insert(i+1, "twiny")          
+        
+        if "twinx" in f:
+            n_ax += len(f["twinx"])
+            for i in f["twinx"]:
+                coords.insert(i+1, "twinx")
+
+        fig[fig_i] = plt.figure(figsize = figsize)
+        ax[fig_i] = [0] * n_ax
+
+        for ax_i in range(n_ax):
+            if coords[ax_i] == "twinx":
+                ax[fig_i][ax_i] = ax[fig_i][ax_i-1].twinx()
+            elif coords[ax_i] == "twiny":
+                ax[fig_i][ax_i] = ax[fig_i][ax_i-1].twiny()
+            else:
+                ax[fig_i][ax_i] = fig[fig_i].add_axes(coords[ax_i])
+
+    if label:
+        for fig_i in range(len(fig)):
+            fig[fig_i].suptitle("Figure = {:}".format(fig_i))
+            for ax_i in range(len(ax[fig_i])):
+                ax[fig_i][ax_i].set_xlabel("Axis = {:}".format(ax_i))
+                ax[fig_i][ax_i].set_ylabel("Axis = {:}".format(ax_i))
+                
+                
+    return fig, ax
+
+
+    
 if __name__ == '__main__': 
     pass
     

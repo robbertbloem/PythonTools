@@ -292,11 +292,80 @@ class Test_find_longest_list(unittest.TestCase):
     def test_4(self):
         result = PT.find_longest_list(self.a)
         self.assertEqual(result, 1)   
+
+        
+        
+
+class Test_make_figures(unittest.TestCase):
+
+    def setUp(self):
+        pass
+        
+        
+    def test(self):
+        
+        figures = [
+            {"label": "Two axes", "u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [8, 1.2], "ax_w": 17.5, "ax_h": [5.5]}, 
+            {"label": "Two axes and twinx", "u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [8, 1.2], "ax_w": 16, "ax_h": [5.5], "twinx": [0]},
+            {"label": "Two axes, twinx, twiny", "u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [8, 1.2], "ax_w": 16, "ax_h": [5.5], "twinx": [0], "twiny": [0]},
+            {"label": "Documentation", "u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [5, 1.2], "ax_w": 16, "ax_h": [6,3], "twinx": [0]},  
+            {"label": "No u", "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [5, 1.2], "ax_w": 16, "ax_h": [6,3], "twinx": [0]},              
+        ]
+        fig, ax = PT.make_figures(figures, label = True)
+        
+        for fig_i, f in enumerate(figures):
+            fig[fig_i].suptitle(f["label"])
+
+        
+    def test_no_list(self):
+
+        figures = {"label": "Two axes", "u": 1/2.54, "fig_w": 20, "fig_h": 15, "l": 1.8, "b": [8, 1.2], "ax_w": 17.5, "ax_h": [5.5]}     
+        fig, ax = PT.make_figures(figures, label = True)
+        
+        fig_i = 0
+        fig[fig_i].suptitle(figures["label"])        
     
+    
+    def test_named_sizes(self):
+        figures = [
+            "wide",
+            "A4_landscape",
+            "A4_portrait",
+            "standard",
+        ]
+        fig, ax = PT.make_figures(figures, label = True)
+        
+        for fig_i, f in enumerate(figures):
+            fig[fig_i].suptitle(f)        
+        
+    def test_unknown_named_size(self):
+        
+        figures = [
+            "fiets"
+        ]
+        
+        with self.assertWarns(UserWarning) as cm:        
+            fig, ax = PT.make_figures(figures, label = True)
+            for fig_i, f in enumerate(figures):
+                fig[fig_i].suptitle(f)   
+        
+    def test_missing_params(self):
+        
+        figures = [
+            {"label": "Missing fig_w", "u": 1/2.54, "fig_h": 15, "l": 1.8, "b": 1.2, "ax_w": 17.5, "ax_h": 12.5},
+        ]
+        
+        with self.assertRaises(KeyError) as cm:        
+            fig, ax = PT.make_figures(figures, label = True)
+
+        
+        
 if __name__ == '__main__': 
 
     verbosity = 1
 
+    plt.close("all")
+    
     if 1:
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_make_coordinates)
         unittest.TextTestRunner(verbosity = verbosity).run(suite)  
@@ -311,10 +380,12 @@ if __name__ == '__main__':
         suite = unittest.TestLoader().loadTestsFromTestCase(Test_find_longest_list)
         unittest.TextTestRunner(verbosity = verbosity).run(suite)  
 
+    if 1:
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test_make_figures)
+        unittest.TextTestRunner(verbosity = verbosity).run(suite)  
 
 
-
-
+    plt.show()
 
 
 
