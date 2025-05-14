@@ -192,7 +192,7 @@ def interpolate_data(original_x, original_y, new_x, interpolate_kind = "default"
     if interpolate_kind == "default":
         interpolate_kind = "linear"
     
-    DEBUG.verbose("  Interpolating data using %s" % (interpolate_kind), verbose_level = 1)
+    # DEBUG.verbose("  Interpolating data using %s" % (interpolate_kind), verbose_level = 1)
     
     f = interp1d(original_x, original_y, kind = interpolate_kind)
     new_y = f(new_x)    
